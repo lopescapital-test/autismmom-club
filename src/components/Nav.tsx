@@ -15,7 +15,7 @@ export default function Nav() {
         <div className="flex-shrink-0">
           <Link href="/" className="flex flex-col items-start leading-tight">
             <span className="font-sans text-xl md:text-2xl font-bold text-gradient whitespace-nowrap">
-              Autism<sup className="text-[0.6em] align-super text-primary">+</sup> Moms Club
+              Autism<sup style={{ color: "#E6A8B5", WebkitTextFillColor: "#E6A8B5" }} className="text-[0.6em] align-super">+</sup> Moms Club
             </span>
             <span className="text-[10px] md:text-xs text-foreground/50 font-body whitespace-nowrap">
               The power of a mom raising a neurodivergent child.
