@@ -31,7 +31,6 @@ export default function Nav() {
           <GlitchLink href="/toolkit/reviews" text="Reviews" />
           <GlitchLink href="/toolkit/school" text="School" />
           <GlitchLink href="/wall" text="Wall" />
-          <GlitchLink href="/discuss" text="Discuss" />
         </div>
         
         {/* Right: Submit Button & Hamburger */}
@@ -61,7 +60,6 @@ export default function Nav() {
           <MobileLink href="/toolkit/reviews" text="Reviews" onClick={() => setIsOpen(false)} />
           <MobileLink href="/toolkit/school" text="School" onClick={() => setIsOpen(false)} />
           <MobileLink href="/wall" text="Wall" onClick={() => setIsOpen(false)} />
-          <MobileLink href="/discuss" text="Discuss" onClick={() => setIsOpen(false)} />
           <div className="mt-4 pt-4 border-t border-border/50 sm:hidden">
             <Link href="/submit" onClick={() => setIsOpen(false)} className="flex items-center justify-center bg-gradient-accent text-white font-body text-sm rounded-xl w-full px-6 py-3 shadow-md font-bold">
               Share a Win

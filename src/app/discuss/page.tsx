@@ -25,6 +25,8 @@ const CATEGORY_EMOJIS: Record<string, string> = {
   school: "🏫",
 };
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Community Discussions - Autism+ Moms Club",
   description: "Join the conversation. Share tips, ask questions, and connect with other moms navigating autism.",

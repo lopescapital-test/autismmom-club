@@ -21,14 +21,20 @@ export default async function CategoryPage({ params }: { params: { category: str
   const p = await params;
   const category = p?.category || "category";
   
-  const supabase = await createClient();
-  const { data: remoteResources, error } = await supabase
-    .from("resources")
-    .select("*")
-    .eq("status", "published")
-    .eq("category", category);
-    
-  if (error) console.error("Supabase Error:", error);
+  let remoteResources: any[] | null = null;
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("resources")
+      .select("*")
+      .eq("status", "published")
+      .eq("category", category);
+    if (error) console.error("Supabase Error:", error);
+    remoteResources = data;
+  } catch (e) {
+    // Supabase unavailable during static build — local resources only
+    console.error("Supabase unavailable:", e);
+  }
 
   const localFiltered = RESOURCES.filter(r => r.category === category);
   const filteredResources = [...localFiltered, ...(remoteResources || [])];
