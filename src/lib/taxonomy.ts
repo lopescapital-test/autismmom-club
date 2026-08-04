@@ -45,6 +45,25 @@ export const TOOLKIT_CATEGORIES = [
 
 export type ResourceCategory = (typeof TOOLKIT_CATEGORIES)[number]["value"];
 
+// SITE_SECTIONS — standalone pages that live outside /toolkit/[category] but
+// render as cards in the homepage grid. Do NOT add these to TOOLKIT_CATEGORIES.
+export const SITE_SECTIONS = [
+  {
+    value: "hacks" as const,
+    label: "Hacks" as const,
+    emojiImage: "/emojis/light-bulb.png" as const,
+    description: "Everyday products, clever uses." as const,
+    href: "/hacks" as const,
+  },
+  {
+    value: "wall" as const,
+    label: "Wall" as const,
+    emojiImage: "/emojis/pushpin.png" as const,
+    description: "Real wins from real moms." as const,
+    href: "/wall" as const,
+  },
+] as const;
+
 // Unicode emoji characters for compact display (discuss chips, etc.)
 export const CATEGORY_EMOJI_CHAR: Record<string, string> = {
   general: "💬",
