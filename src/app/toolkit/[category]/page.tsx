@@ -5,6 +5,8 @@ import { RESOURCES } from "@/data/resources";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 
+export const revalidate = 300;
+
 export async function generateMetadata({ params }: { params: { category: string } }): Promise<Metadata> {
   const p = await params;
   const category = p?.category || "";
@@ -32,8 +34,7 @@ export default async function CategoryPage({ params }: { params: { category: str
     if (error) console.error("Supabase Error:", error);
     remoteResources = data;
   } catch (e) {
-    // Supabase unavailable during static build — local resources only
-    console.error("Supabase unavailable:", e);
+    console.error("[toolkit] Supabase fetch failed, falling back to local resources only:", e instanceof Error ? e.message : e);
   }
 
   const localFiltered = RESOURCES.filter(r => r.category === category);
