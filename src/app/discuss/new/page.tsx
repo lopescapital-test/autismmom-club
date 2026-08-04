@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import NewThreadForm from "./NewThreadForm";
 
 export const metadata = {
-  title: "Start a Discussion - Autism Mom Club",
+  title: "Start a Discussion - Autism+ Moms Club",
   description: "Start a new conversation with the community.",
 };
 

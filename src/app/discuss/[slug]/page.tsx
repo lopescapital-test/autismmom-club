@@ -35,9 +35,9 @@ export async function generateMetadata({
 
   return {
     title: data
-      ? `${data.title} - Autism Mom Club Discussions`
-      : "Discussion - Autism Mom Club",
-    description: "Join the conversation on Autism Moms Club.",
+      ? `${data.title} - Autism+ Moms Club Discussions`
+      : "Discussion - Autism+ Moms Club",
+    description: "Join the conversation on Autism+ Moms Club.",
   };
 }
 

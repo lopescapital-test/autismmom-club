@@ -12,8 +12,13 @@ export default function Nav() {
       <div className="w-full mx-auto px-4 md:px-6 h-20 flex items-center justify-between">
         {/* Left: Logo */}
         <div className="flex-shrink-0">
-          <Link href="/" className="font-sans text-xl md:text-2xl font-bold text-gradient whitespace-nowrap">
-            Autism Moms Club
+          <Link href="/" className="flex flex-col items-start leading-tight">
+            <span className="font-sans text-xl md:text-2xl font-bold text-gradient whitespace-nowrap">
+              Autism+ Moms Club
+            </span>
+            <span className="text-[10px] md:text-xs text-foreground/50 font-body whitespace-nowrap">
+              The power of a neurodivergent mom
+            </span>
           </Link>
         </div>
         

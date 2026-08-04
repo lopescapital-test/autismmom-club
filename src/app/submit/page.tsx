@@ -3,7 +3,7 @@ import Footer from "@/components/Footer";
 import SubmitForm from "@/components/SubmitForm";
 
 export const metadata = {
-  title: "Submit a Resource - Autism Mom Club",
+  title: "Submit a Resource - Autism+ Moms Club",
   description: "Share a win or strategy with the community.",
 };
 

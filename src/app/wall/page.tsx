@@ -4,7 +4,7 @@ import { createClient } from "@/utils/supabase/server";
 import { initialAffirmations } from "@/data/affirmations";
 
 export const metadata = {
-  title: "Community Bulletin Board - Autism Mom Club",
+  title: "Community Bulletin Board - Autism+ Moms Club",
   description: "Words of encouragement, quick tips, and affirmations from other moms.",
 };
 

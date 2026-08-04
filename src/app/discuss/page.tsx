@@ -26,7 +26,7 @@ const CATEGORY_EMOJIS: Record<string, string> = {
 };
 
 export const metadata = {
-  title: "Community Discussions - Autism Mom Club",
+  title: "Community Discussions - Autism+ Moms Club",
   description: "Join the conversation. Share tips, ask questions, and connect with other moms navigating autism.",
 };
 
