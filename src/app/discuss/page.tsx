@@ -3,27 +3,9 @@ import Footer from "@/components/Footer";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { MessageSquare, Plus } from "lucide-react";
+import { DISCUSS_CATEGORIES, CATEGORY_EMOJI_CHAR, ALL_FILTER } from "@/lib/taxonomy";
 
-const CATEGORIES = [
-  { id: "all", label: "All" },
-  { id: "general", label: "General" },
-  { id: "food", label: "Recipes" },
-  { id: "routines", label: "Routines" },
-  { id: "sensory", label: "Sensory" },
-  { id: "communication", label: "Communication" },
-  { id: "reviews", label: "Reviews" },
-  { id: "school", label: "School" },
-];
-
-const CATEGORY_EMOJIS: Record<string, string> = {
-  general: "💬",
-  food: "🍲",
-  routines: "📋",
-  sensory: "🧩",
-  communication: "🗣️",
-  reviews: "⭐",
-  school: "🏫",
-};
+const CATEGORIES = [ALL_FILTER, ...DISCUSS_CATEGORIES];
 
 export const metadata = {
   title: "Community Discussions - Autism+ Moms Club",
@@ -83,12 +65,12 @@ export default async function DiscussPage({
           {/* Category Filter Tabs */}
           <div className="flex flex-wrap gap-2 mb-10">
             {CATEGORIES.map((cat) => {
-              const isActive = cat.id === activeCategory;
+              const isActive = cat.value === activeCategory;
               const href =
-                cat.id === "all" ? "/discuss" : `/discuss?category=${cat.id}`;
+                cat.value === "all" ? "/discuss" : `/discuss?category=${cat.value}`;
               return (
                 <Link
-                  key={cat.id}
+                  key={cat.value}
                   href={href}
                   className={`px-4 py-2 rounded-full text-sm font-bold transition-all ${
                     isActive
@@ -96,7 +78,7 @@ export default async function DiscussPage({
                       : "bg-white/80 text-foreground/70 border border-border/50 hover:bg-surface hover:text-foreground hover:shadow-sm"
                   }`}
                 >
-                  {cat.id !== "all" && CATEGORY_EMOJIS[cat.id] + " "}
+                  {cat.value !== "all" && CATEGORY_EMOJI_CHAR[cat.value] + " "}
                   {cat.label}
                 </Link>
               );
@@ -140,9 +122,9 @@ export default async function DiscussPage({
 
 function ThreadCard({ thread }: { thread: any }) {
   const categoryLabel =
-    CATEGORIES.find((c) => c.id === thread.category)?.label ||
+    CATEGORIES.find((c) => c.value === thread.category)?.label ||
     thread.category;
-  const categoryEmoji = CATEGORY_EMOJIS[thread.category] || "💬";
+  const categoryEmoji = CATEGORY_EMOJI_CHAR[thread.category] || "💬";
   const timeAgo = getTimeAgo(new Date(thread.created_at));
   const preview =
     thread.content.length > 150

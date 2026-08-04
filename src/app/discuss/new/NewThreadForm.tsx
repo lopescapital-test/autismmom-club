@@ -2,16 +2,12 @@
 
 import { useState } from "react";
 import { createThread } from "../actions";
+import { DISCUSS_CATEGORIES, CATEGORY_EMOJI_CHAR } from "@/lib/taxonomy";
 
-const CATEGORIES = [
-  { id: "general", label: "💬 General" },
-  { id: "food", label: "🍲 Recipes" },
-  { id: "routines", label: "📋 Routines" },
-  { id: "sensory", label: "🧩 Sensory" },
-  { id: "communication", label: "🗣️ Communication" },
-  { id: "reviews", label: "⭐ Reviews" },
-  { id: "school", label: "🏫 School" },
-];
+const CATEGORIES = DISCUSS_CATEGORIES.map((c) => ({
+  value: c.value,
+  label: `${CATEGORY_EMOJI_CHAR[c.value]} ${c.label}`,
+}));
 
 export default function NewThreadForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,7 +40,7 @@ export default function NewThreadForm() {
         >
           <option value="">Select a category…</option>
           {CATEGORIES.map((cat) => (
-            <option key={cat.id} value={cat.id}>
+            <option key={cat.value} value={cat.value}>
               {cat.label}
             </option>
           ))}

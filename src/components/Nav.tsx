@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import styles from '@/components/ui/glitch-nav.module.css';
+import { TOOLKIT_CATEGORIES } from '@/lib/taxonomy';
 
 export default function Nav() {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,12 +25,9 @@ export default function Nav() {
         
         {/* Middle: Glitch Links (Hidden on mobile) */}
         <div className="hidden xl:flex items-center justify-center gap-6 lg:gap-8 flex-1 overflow-x-auto hide-scrollbar">
-          <GlitchLink href="/toolkit/food" text="Recipes" />
-          <GlitchLink href="/toolkit/routines" text="Routines" />
-          <GlitchLink href="/toolkit/sensory" text="Sensory" />
-          <GlitchLink href="/toolkit/communication" text="Communication" />
-          <GlitchLink href="/toolkit/reviews" text="Reviews" />
-          <GlitchLink href="/toolkit/school" text="School" />
+          {TOOLKIT_CATEGORIES.map((cat) => (
+            <GlitchLink key={cat.value} href={`/toolkit/${cat.value}`} text={cat.label} />
+          ))}
           <GlitchLink href="/wall" text="Wall" />
           <GlitchLink href="/discuss" text="Discuss" />
         </div>
@@ -54,12 +52,9 @@ export default function Nav() {
       {/* Mobile Menu Dropdown */}
       {isOpen && (
         <div className="xl:hidden border-t border-border/50 bg-white/95 backdrop-blur-xl absolute top-20 left-0 w-full shadow-2xl p-4 flex flex-col gap-2">
-          <MobileLink href="/toolkit/food" text="Recipes" onClick={() => setIsOpen(false)} />
-          <MobileLink href="/toolkit/routines" text="Routines" onClick={() => setIsOpen(false)} />
-          <MobileLink href="/toolkit/sensory" text="Sensory" onClick={() => setIsOpen(false)} />
-          <MobileLink href="/toolkit/communication" text="Communication" onClick={() => setIsOpen(false)} />
-          <MobileLink href="/toolkit/reviews" text="Reviews" onClick={() => setIsOpen(false)} />
-          <MobileLink href="/toolkit/school" text="School" onClick={() => setIsOpen(false)} />
+          {TOOLKIT_CATEGORIES.map((cat) => (
+            <MobileLink key={cat.value} href={`/toolkit/${cat.value}`} text={cat.label} onClick={() => setIsOpen(false)} />
+          ))}
           <MobileLink href="/wall" text="Wall" onClick={() => setIsOpen(false)} />
           <MobileLink href="/discuss" text="Discuss" onClick={() => setIsOpen(false)} />
           <div className="mt-4 pt-4 border-t border-border/50 sm:hidden">

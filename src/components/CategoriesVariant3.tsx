@@ -1,39 +1,22 @@
 import { Apple, Clock, Headphones, MessageSquare, Star, BookOpen } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { ArrowUpRight } from "lucide-react";
+import { TOOLKIT_CATEGORIES } from "@/lib/taxonomy";
 
-const CATEGORIES = [
-  {
-    title: "Food",
-    description: "Texture, safe foods, and sensory-friendly recipes.",
-    icon: Apple
-  },
-  {
-    title: "Routines",
-    description: "Mornings, transitions, bedtime, and meltdowns.",
-    icon: Clock
-  },
-  {
-    title: "Sensory",
-    description: "Tools, spaces, and regulation strategies.",
-    icon: Headphones
-  },
-  {
-    title: "Communication",
-    description: "AAC, scripts, and shutdown vs. meltdown.",
-    icon: MessageSquare
-  },
-  {
-    title: "Reviews",
-    description: "Honest, non-affiliate product reviews from parents.",
-    icon: Star
-  },
-  {
-    title: "School",
-    description: "IEPs, providers, and insurance navigation.",
-    icon: BookOpen
-  }
-];
+const ICON_MAP: Record<string, LucideIcon> = {
+  food: Apple,
+  routines: Clock,
+  sensory: Headphones,
+  communication: MessageSquare,
+  reviews: Star,
+  school: BookOpen,
+};
+
+const CATEGORIES = TOOLKIT_CATEGORIES.map((c) => ({
+  ...c,
+  icon: ICON_MAP[c.value],
+}));
 
 export default function CategoriesVariant3() {
   return (
@@ -49,8 +32,8 @@ export default function CategoriesVariant3() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {CATEGORIES.map((cat, i) => (
-            <Card key={i} className="group relative h-[300px] bg-background border-border/50 p-8 rounded-3xl hover:border-foreground transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 overflow-hidden flex flex-col justify-between">
+          {CATEGORIES.map((cat) => (
+            <Card key={cat.value} className="group relative h-[300px] bg-background border-border/50 p-8 rounded-3xl hover:border-foreground transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 overflow-hidden flex flex-col justify-between">
               
               <div className="flex justify-between items-start">
                 <div className="w-14 h-14 bg-surface text-foreground rounded-2xl flex items-center justify-center transition-colors duration-500 group-hover:bg-foreground group-hover:text-background">
@@ -60,7 +43,7 @@ export default function CategoriesVariant3() {
               </div>
 
               <div className="mt-auto pt-10">
-                <h3 className="text-2xl font-serif text-foreground mb-3 leading-none group-hover:text-primary transition-colors">{cat.title}</h3>
+                <h3 className="text-2xl font-serif text-foreground mb-3 leading-none group-hover:text-primary transition-colors">{cat.label}</h3>
                 <p className="text-base font-body text-foreground/70 leading-relaxed font-light">
                   {cat.description}
                 </p>

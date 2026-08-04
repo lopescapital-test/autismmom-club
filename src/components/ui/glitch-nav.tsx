@@ -2,16 +2,14 @@
 
 import Link from "next/link";
 import styles from "./glitch-nav.module.css";
+import { TOOLKIT_CATEGORIES } from "@/lib/taxonomy";
 
 export default function GlitchNav() {
   return (
     <nav className="flex items-center justify-center gap-8 flex-wrap py-8 w-full flex-wrap">
-      <GlitchLink href="/toolkit/food" text="Recipes" />
-      <GlitchLink href="/toolkit/routines" text="Routines" />
-      <GlitchLink href="/toolkit/sensory" text="Sensory" />
-      <GlitchLink href="/toolkit/communication" text="Communication" />
-      <GlitchLink href="/toolkit/reviews" text="Reviews" />
-      <GlitchLink href="/toolkit/school" text="School" />
+      {TOOLKIT_CATEGORIES.map((cat) => (
+        <GlitchLink key={cat.value} href={`/toolkit/${cat.value}`} text={cat.label} />
+      ))}
       <GlitchLink href="/wall" text="Wall" />
     </nav>
   );

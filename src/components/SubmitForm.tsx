@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { createClient } from "@/utils/supabase/client";
+import { TOOLKIT_CATEGORIES } from "@/lib/taxonomy";
 
 export default function SubmitForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -84,12 +85,11 @@ export default function SubmitForm() {
         <div>
           <label className="block text-sm font-bold text-foreground/70 mb-2">Category</label>
           <select name="category" required className="w-full rounded-2xl border border-border/50 bg-surface/50 px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 font-body shadow-inner appearance-none cursor-pointer">
-            <option value="food">Recipes</option>
-            <option value="routines">Routines</option>
-            <option value="sensory">Sensory</option>
-            <option value="communication">Communication</option>
-            <option value="reviews">Reviews</option>
-            <option value="school">School</option>
+            {TOOLKIT_CATEGORIES.map((c) => (
+              <option key={c.value} value={c.value}>
+                {c.label}
+              </option>
+            ))}
           </select>
         </div>
         <div>
