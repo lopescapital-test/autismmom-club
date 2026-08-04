@@ -12,7 +12,7 @@ export async function approveResource(formData: FormData) {
   if (!id) throw new Error("Missing ID");
 
   if (!emoji || emoji.length < 3) {
-    emoji = "/emojis/star.png";
+    emoji = "/emojis/star.svg";
   }
 
   const { error } = await supabase

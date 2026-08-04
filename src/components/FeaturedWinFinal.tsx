@@ -1,5 +1,6 @@
 "use client";
 
+import { TOOLKIT_CATEGORIES } from "@/lib/taxonomy";
 import { AnimatedFeatureCard } from "@/components/ui/feature-card-1";
 import { animate, motion, useMotionValue } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -10,28 +11,28 @@ const cards = [
     id: "001", 
     tag: "Recipes",
     title: "Texture-consistent snacks designed specifically for ARFID and aversions.", 
-    imageSrc: "/emojis/bento-box.webp", 
+    imageSrc: TOOLKIT_CATEGORIES.find(c => c.value === "food")!.emojiImage, 
     color: "orange" as const
   },
   { 
     id: "002", 
     tag: "Routines",
     title: "A step-by-step visual schedule to reduce anxiety during morning transitions.", 
-    imageSrc: "/emojis/sun-behind-cloud.png", 
+    imageSrc: TOOLKIT_CATEGORIES.find(c => c.value === "routines")!.emojiImage, 
     color: "blue" as const
   },
   { 
     id: "003", 
     tag: "Sensory",
     title: "Proprioceptive exercises that provide calming input for nervous system regulation.", 
-    imageSrc: "/emojis/musical-notes.png", 
+    imageSrc: TOOLKIT_CATEGORIES.find(c => c.value === "sensory")!.emojiImage, 
     color: "purple" as const
   },
   { 
     id: "004", 
     tag: "Communication",
     title: "Customizable communication cards for low-demand days.", 
-    imageSrc: "/emojis/studio-microphone.webp", 
+    imageSrc: TOOLKIT_CATEGORIES.find(c => c.value === "communication")!.emojiImage, 
     color: "green" as const
   }
 ];
