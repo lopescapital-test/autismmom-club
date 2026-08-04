@@ -24,7 +24,7 @@ export default function Nav() {
         </div>
         
         {/* Middle: Glitch Links (Hidden on mobile) */}
-        <div className="hidden xl:flex items-center justify-center gap-6 lg:gap-8 flex-1 overflow-x-auto hide-scrollbar">
+        <div className="hidden 2xl:flex items-center justify-center gap-5 flex-1 overflow-x-auto hide-scrollbar">
           {TOOLKIT_CATEGORIES.map((cat) => (
             <GlitchLink key={cat.value} href={`/toolkit/${cat.value}`} text={cat.label} />
           ))}
@@ -40,7 +40,7 @@ export default function Nav() {
             </Link>
           </div>
           <button 
-            className="xl:hidden p-2 text-foreground/80 hover:bg-surface rounded-lg transition-colors"
+            className="2xl:hidden p-2 text-foreground/80 hover:bg-surface rounded-lg transition-colors"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
           >
@@ -51,7 +51,7 @@ export default function Nav() {
 
       {/* Mobile Menu Dropdown */}
       {isOpen && (
-        <div className="xl:hidden border-t border-border/50 bg-white/95 backdrop-blur-xl absolute top-20 left-0 w-full shadow-2xl p-4 flex flex-col gap-2">
+        <div className="2xl:hidden border-t border-border/50 bg-white/95 backdrop-blur-xl absolute top-20 left-0 w-full shadow-2xl p-4 flex flex-col gap-2">
           {TOOLKIT_CATEGORIES.map((cat) => (
             <MobileLink key={cat.value} href={`/toolkit/${cat.value}`} text={cat.label} onClick={() => setIsOpen(false)} />
           ))}
