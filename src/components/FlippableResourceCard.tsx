@@ -16,8 +16,6 @@ interface Props {
 export default function FlippableResourceCard({ resource, initialComments = [] }: Props) {
   const [isFlipped, setIsFlipped] = useState(false);
   const [comments, setComments] = useState<any[]>([
-    { id: "1", author: "Jenna T.", text: "This literally saved our mornings. Thank you!" },
-    { id: "2", author: "Lisa M.", text: "Going to try this tomorrow, wish me luck." },
     ...initialComments
   ]);
   const [newComment, setNewComment] = useState("");
