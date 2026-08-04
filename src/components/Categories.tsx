@@ -2,9 +2,16 @@
 import Link from "next/link";
 import { TOOLKIT_CATEGORIES, SITE_SECTIONS } from "@/lib/taxonomy";
 
+// Custom order: Row 1 = food, routines, sensory, hacks | Row 2 = communication, reviews, school, wall
 const ALL_SECTIONS = [
-  ...TOOLKIT_CATEGORIES.map((c) => ({ ...c, href: `/toolkit/${c.value}` })),
-  ...SITE_SECTIONS,
+  { ...TOOLKIT_CATEGORIES.find((c) => c.value === "food")!, href: "/toolkit/food" },
+  { ...TOOLKIT_CATEGORIES.find((c) => c.value === "routines")!, href: "/toolkit/routines" },
+  { ...TOOLKIT_CATEGORIES.find((c) => c.value === "sensory")!, href: "/toolkit/sensory" },
+  { ...SITE_SECTIONS.find((s) => s.value === "hacks")! },
+  { ...TOOLKIT_CATEGORIES.find((c) => c.value === "communication")!, href: "/toolkit/communication" },
+  { ...TOOLKIT_CATEGORIES.find((c) => c.value === "reviews")!, href: "/toolkit/reviews" },
+  { ...TOOLKIT_CATEGORIES.find((c) => c.value === "school")!, href: "/toolkit/school" },
+  { ...SITE_SECTIONS.find((s) => s.value === "wall")! },
 ];
 
 export default function Categories() {
@@ -12,13 +19,13 @@ export default function Categories() {
     <section id="explore" className="py-24 px-6 md:px-12 max-w-6xl mx-auto">
       <h2 className="text-3xl md:text-4xl font-serif text-foreground mb-12 text-center md:text-left">Explore the Toolkit</h2>
 
-      {/* Flex with justify-center so the last row (2 items) centers naturally */}
-      <div className="flex flex-wrap justify-center gap-6">
+      {/* 4 columns at lg+ = two even rows of 4 cards, no orphan */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {ALL_SECTIONS.map((sec) => (
           <Link
             key={sec.value}
             href={sec.href}
-            className="bg-white rounded-[32px] border border-border/50 p-8 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group flex flex-col items-center text-center justify-start relative overflow-hidden h-full min-h-[320px] w-full sm:w-[calc(50%-12px)] lg:w-[calc(33.333%-16px)] max-w-sm"
+            className="bg-white rounded-[32px] border border-border/50 p-8 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer group flex flex-col items-center text-center justify-start relative overflow-hidden h-full min-h-[320px]"
           >
             <div className="absolute inset-0 bg-gradient-to-b from-surface/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <div className="w-24 h-24 mb-6 flex items-center justify-center transition-transform duration-500 group-hover:scale-110 drop-shadow-xl relative z-10">
