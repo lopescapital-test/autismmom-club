@@ -2,6 +2,8 @@ import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import SubmitForm from "@/components/SubmitForm";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Submit a Resource - Autism+ Moms Club",
   description: "Share a win or strategy with the community.",

@@ -6,6 +6,8 @@ import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { TOOLKIT_CATEGORIES } from "@/lib/taxonomy";
 
+export const revalidate = 300;
+
 export async function generateMetadata({ params }: { params: { category: string } }): Promise<Metadata> {
   const p = await params;
   const category = p?.category || "";
@@ -22,14 +24,19 @@ export default async function CategoryPage({ params }: { params: { category: str
   const p = await params;
   const category = p?.category || "category";
   
-  const supabase = await createClient();
-  const { data: remoteResources, error } = await supabase
-    .from("resources")
-    .select("*")
-    .eq("status", "published")
-    .eq("category", category);
-    
-  if (error) console.error("Supabase Error:", error);
+  let remoteResources: any[] | null = null;
+  try {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+      .from("resources")
+      .select("*")
+      .eq("status", "published")
+      .eq("category", category);
+    if (error) console.error("Supabase Error:", error);
+    remoteResources = data;
+  } catch (e) {
+    console.error("[toolkit] Supabase fetch failed, falling back to local resources only:", e instanceof Error ? e.message : e);
+  }
 
   const localFiltered = RESOURCES.filter(r => r.category === category);
   const filteredResources = [...localFiltered, ...(remoteResources || [])];

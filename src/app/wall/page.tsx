@@ -3,6 +3,8 @@ import StickyBoard from "@/components/StickyBoard";
 import { createClient } from "@/utils/supabase/server";
 import { initialAffirmations } from "@/data/affirmations";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Community Bulletin Board - Autism+ Moms Club",
   description: "Words of encouragement, quick tips, and affirmations from other moms.",

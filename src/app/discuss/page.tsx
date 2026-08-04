@@ -7,6 +7,8 @@ import { DISCUSS_CATEGORIES, CATEGORY_EMOJI_CHAR, ALL_FILTER } from "@/lib/taxon
 
 const CATEGORIES = [ALL_FILTER, ...DISCUSS_CATEGORIES];
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Community Discussions - Autism+ Moms Club",
   description: "Join the conversation. Share tips, ask questions, and connect with other moms navigating autism.",

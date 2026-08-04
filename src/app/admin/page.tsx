@@ -5,6 +5,8 @@ import AdminApprovalForm from "@/components/AdminApprovalForm";
 import { deleteResource, deleteComment } from "./actions";
 import { deleteThread, deleteReply } from "../discuss/actions";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminPage() {
   const supabase = await createClient();
 
