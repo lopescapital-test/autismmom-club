@@ -107,3 +107,15 @@ export const SYMPTOMS = [
 ] as const;
 
 export type Symptom = (typeof SYMPTOMS)[number]["value"];
+
+export const HACK_SITUATIONS = [
+  { value: "travel" as const, label: "Travel & On-the-Go" as const },
+  { value: "mealtime" as const, label: "Mealtime" as const },
+  { value: "bedtime" as const, label: "Bedtime" as const },
+  { value: "school" as const, label: "School" as const },
+  { value: "appointments" as const, label: "Appointments & Errands" as const },
+  { value: "outings" as const, label: "Outings & Playdates" as const },
+  { value: "home" as const, label: "Home & Daily Life" as const },
+] as const;
+
+export type HackSituation = (typeof HACK_SITUATIONS)[number]["value"];
