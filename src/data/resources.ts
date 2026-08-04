@@ -1,4 +1,4 @@
-import type { ResourceCategory } from "@/lib/taxonomy";
+import type { ResourceCategory, Diagnosis, Symptom } from "@/lib/taxonomy";
 
 export interface Resource {
   id: string;
@@ -11,6 +11,8 @@ export interface Resource {
   emoji: string;
   tags: string[];
   readTime: string;
+  diagnoses?: Diagnosis[];
+  symptoms?: Symptom[];
 }
 
 export const RESOURCES: Resource[] = [
@@ -24,7 +26,9 @@ export const RESOURCES: Resource[] = [
     author: "Elena R.",
     emoji: "/emojis/pot-of-food.webp",
     tags: ["ARFID", "Snacks", "Safe Foods"],
-    readTime: "3 min"
+    readTime: "3 min",
+    diagnoses: ["autism"],
+    symptoms: ["eating"]
   },
   {
     id: "2",
@@ -36,7 +40,9 @@ export const RESOURCES: Resource[] = [
     author: "Sarah M.",
     emoji: "/emojis/sun-behind-cloud.webp",
     tags: ["Mornings", "PDA", "Visuals"],
-    readTime: "4 min"
+    readTime: "4 min",
+    diagnoses: ["autism", "adhd"],
+    symptoms: ["transitions", "mood-swings"]
   },
   {
     id: "3",
@@ -48,7 +54,9 @@ export const RESOURCES: Resource[] = [
     author: "Coach J",
     emoji: "/emojis/musical-notes.webp",
     tags: ["Sensory Seeker", "Proprioceptive", "Heavy Work"],
-    readTime: "5 min"
+    readTime: "5 min",
+    diagnoses: ["autism", "adhd"],
+    symptoms: ["sensory-overload", "high-energy", "restlessness"]
   },
   {
     id: "4",
@@ -60,7 +68,9 @@ export const RESOURCES: Resource[] = [
     author: "TiredMom99",
     emoji: "/emojis/studio-microphone.webp",
     tags: ["Shutdowns", "AAC", "Non-speaking"],
-    readTime: "2 min"
+    readTime: "2 min",
+    diagnoses: ["autism"],
+    symptoms: ["sensory-overload", "speech-language"]
   },
   {
     id: "5",
@@ -72,7 +82,9 @@ export const RESOURCES: Resource[] = [
     author: "AutismMom_Jen",
     emoji: "/emojis/star.webp",
     tags: ["Auditory", "Gear", "School"],
-    readTime: "4 min"
+    readTime: "4 min",
+    diagnoses: ["autism", "adhd"],
+    symptoms: ["sensory-overload"]
   },
   {
     id: "6",
@@ -84,6 +96,8 @@ export const RESOURCES: Resource[] = [
     author: "AdvocateMama",
     emoji: "/emojis/backpack.webp",
     tags: ["IEP", "Advocacy", "Organization"],
-    readTime: "6 min"
+    readTime: "6 min",
+    diagnoses: ["autism", "adhd"],
+    symptoms: ["speech-language", "transitions"]
   }
 ];

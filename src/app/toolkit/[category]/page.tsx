@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { RESOURCES } from "@/data/resources";
 import { createClient } from "@/utils/supabase/server";
-import Link from "next/link";
 import { TOOLKIT_CATEGORIES } from "@/lib/taxonomy";
+import TaxonomyFilter from "@/components/TaxonomyFilter";
+import FilteredResourceGrid from "@/components/FilteredResourceGrid";
 
 export const revalidate = 300;
 
@@ -53,36 +55,14 @@ export default async function CategoryPage({ params }: { params: { category: str
           Practical strategies and tools shared by other moms navigating {title}.
         </p>
 
-        {filteredResources.length === 0 ? (
-          <div className="bg-surface rounded-3xl p-12 text-center border border-border/50">
-            <p className="text-foreground/70 font-serif text-lg mb-4">We haven't added any strategies here yet.</p>
-            <Link href="/submit" className="bg-primary text-white rounded-full px-6 py-2 shadow-sm hover:opacity-90 inline-block font-body">Share a Win</Link>
+        <Suspense fallback={<div className="h-12 rounded-xl bg-surface/50 animate-pulse" />}>
+          <div className="mb-10">
+            <TaxonomyFilter />
           </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredResources.map((resource) => (
-              <Link 
-                href={`/resource/${resource.slug}`} 
-                key={resource.id}
-                className="bg-white rounded-[32px] border border-border/50 p-6 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group flex flex-col relative"
-              >
-                <div className="w-16 h-16 mb-4 flex items-center justify-center bg-surface rounded-2xl shrink-0 group-hover:scale-110 transition-transform">
-                  <img src={resource.emoji || ""} alt="Icon" className="w-12 h-12 object-contain drop-shadow-md" />
-                </div>
-                <h3 className="text-xl font-serif text-foreground mb-2 group-hover:text-primary transition-colors line-clamp-2">{resource.title}</h3>
-                <p className="text-sm font-body text-foreground/70 line-clamp-3 mb-6 flex-1">
-                  {resource.description}
-                </p>
-                <div className="flex items-center gap-2 flex-wrap">
-                  {(resource.tags || []).slice(0,2).map((tag: string) => (
-                    <span key={tag} className="bg-surface text-foreground/80 px-2 py-1 rounded text-xs font-mono">{tag}</span>
-                  ))}
-                  <span className="ml-auto text-xs text-foreground/50">{resource.readTime}</span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
+        </Suspense>
+        <Suspense fallback={<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">{Array.from({length: 3}).map((_, i) => <div key={i} className="bg-white rounded-[32px] border border-border/50 p-6 h-64 animate-pulse" />)}</div>}>
+          <FilteredResourceGrid resources={filteredResources} />
+        </Suspense>
       </div>
       <Footer />
     </main>
