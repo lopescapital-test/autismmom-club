@@ -4,6 +4,7 @@ import Footer from "@/components/Footer";
 import { RESOURCES } from "@/data/resources";
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
+import { TOOLKIT_CATEGORIES } from "@/lib/taxonomy";
 
 export async function generateMetadata({ params }: { params: { category: string } }): Promise<Metadata> {
   const p = await params;
@@ -33,9 +34,8 @@ export default async function CategoryPage({ params }: { params: { category: str
   const localFiltered = RESOURCES.filter(r => r.category === category);
   const filteredResources = [...localFiltered, ...(remoteResources || [])];
 
-  // Capitalize the category name
-  let title = category.charAt(0).toUpperCase() + category.slice(1);
-  if (category === "food") title = "Recipes";
+  const catMeta = TOOLKIT_CATEGORIES.find((c) => c.value === category);
+  const title = catMeta?.label ?? category;
 
   return (
     <main className="min-h-screen flex flex-col bg-background">
@@ -84,12 +84,5 @@ export default async function CategoryPage({ params }: { params: { category: str
 
 // Ensure static generation doesn't fail if we don't return all paths, or just use dynamic
 export function generateStaticParams() {
-  return [
-    { category: "food" },
-    { category: "routines" },
-    { category: "sensory" },
-    { category: "communication" },
-    { category: "reviews" },
-    { category: "school" },
-  ];
+  return TOOLKIT_CATEGORIES.map((c) => ({ category: c.value }));
 }

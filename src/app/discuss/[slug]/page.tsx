@@ -6,16 +6,8 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 import ReplyForm from "./ReplyForm";
 import { deleteReply } from "../actions";
+import { CATEGORY_EMOJI_CHAR } from "@/lib/taxonomy";
 
-const CATEGORY_EMOJIS: Record<string, string> = {
-  general: "💬",
-  food: "🍲",
-  routines: "📋",
-  sensory: "🧩",
-  communication: "🗣️",
-  reviews: "⭐",
-  school: "🏫",
-};
 
 export const dynamic = "force-dynamic";
 export const dynamicParams = true;
@@ -68,7 +60,7 @@ export default async function ThreadPage({
     .order("created_at", { ascending: true });
 
   const allReplies = replies || [];
-  const categoryEmoji = CATEGORY_EMOJIS[thread.category] || "💬";
+  const categoryEmoji = CATEGORY_EMOJI_CHAR[thread.category] || "💬";
 
   return (
     <main className="min-h-screen flex flex-col bg-background">

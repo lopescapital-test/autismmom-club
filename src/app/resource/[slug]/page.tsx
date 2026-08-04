@@ -7,6 +7,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 import FlippableResourceCard from "@/components/FlippableResourceCard";
+import { TOOLKIT_CATEGORIES } from "@/lib/taxonomy";
 
 export const dynamicParams = true;
 export const dynamic = "force-dynamic";
@@ -84,7 +85,7 @@ export default async function ResourcePage({ params }: { params: { slug: string 
         
         <Link href={`/toolkit/${resource.category}`} className="inline-flex items-center text-sm font-body text-foreground/60 hover:text-primary transition-colors mb-8 group">
           <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-          Back to {resource.category}
+          Back to {TOOLKIT_CATEGORIES.find((c) => c.value === resource.category)?.label ?? resource.category}
         </Link>
 
         <FlippableResourceCard resource={resource} initialComments={globalComments || []} />

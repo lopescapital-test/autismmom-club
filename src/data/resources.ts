@@ -1,7 +1,9 @@
+import type { ResourceCategory } from "@/lib/taxonomy";
+
 export interface Resource {
   id: string;
   slug: string;
-  category: "food" | "routines" | "sensory" | "communication" | "reviews" | "school";
+  category: ResourceCategory;
   title: string;
   description: string;
   content: string;
