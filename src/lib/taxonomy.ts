@@ -8,37 +8,37 @@ export const TOOLKIT_CATEGORIES = [
   {
     value: "food",
     label: "Food & Recipes",
-    emojiImage: "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Bento%20Box.png",
+    emojiImage: "/emojis/bento-box.webp",
     description: "Texture, safe foods, and sensory-friendly recipes.",
   },
   {
     value: "routines",
     label: "Routines",
-    emojiImage: "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Sun%20Behind%20Cloud.png",
+    emojiImage: "/emojis/sun-behind-cloud.webp",
     description: "Mornings, transitions, bedtime, and meltdowns.",
   },
   {
     value: "sensory",
     label: "Sensory",
-    emojiImage: "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Musical%20Notes.png",
+    emojiImage: "/emojis/musical-notes.webp",
     description: "Tools, spaces, and regulation strategies.",
   },
   {
     value: "communication",
     label: "Communication",
-    emojiImage: "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Studio%20Microphone.png",
+    emojiImage: "/emojis/studio-microphone.webp",
     description: "AAC, scripts, and shutdown vs. meltdown.",
   },
   {
     value: "reviews",
     label: "Reviews",
-    emojiImage: "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Star.png",
+    emojiImage: "/emojis/star.webp",
     description: "Honest, non-affiliate product reviews",
   },
   {
     value: "school",
     label: "School",
-    emojiImage: "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Backpack.png",
+    emojiImage: "/emojis/backpack.webp",
     description: "IEPs, providers, and insurance navigation.",
   },
 ] as const;

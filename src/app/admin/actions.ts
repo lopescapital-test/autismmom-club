@@ -12,7 +12,7 @@ export async function approveResource(formData: FormData) {
   if (!id) throw new Error("Missing ID");
 
   if (!emoji || emoji.length < 3) {
-    emoji = "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Star.png";
+    emoji = "/emojis/star.webp";
   }
 
   const { error } = await supabase
