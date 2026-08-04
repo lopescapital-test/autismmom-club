@@ -73,6 +73,26 @@ export const DIAGNOSES = [
 
 export type Diagnosis = (typeof DIAGNOSES)[number]["value"];
 
+export const PRODUCT_CATEGORIES = [
+  { value: "learning-toys" as const, label: "Learning Toys" as const },
+  { value: "therapy-equipment" as const, label: "Therapy Equipment" as const },
+  { value: "food-brands" as const, label: "Food & Allergy-Friendly Brands" as const },
+  { value: "sensory-tools" as const, label: "Sensory Tools" as const },
+  { value: "clothing-daily-living" as const, label: "Clothing & Daily Living" as const },
+  { value: "tech-apps" as const, label: "Tech & Apps" as const },
+] as const;
+
+export type ProductCategory = (typeof PRODUCT_CATEGORIES)[number]["value"];
+
+export const PRODUCT_CATEGORY_EMOJI: Record<ProductCategory, string> = {
+  "learning-toys": "🧸",
+  "therapy-equipment": "⚕️",
+  "food-brands": "🍎",
+  "sensory-tools": "🧩",
+  "clothing-daily-living": "👕",
+  "tech-apps": "📱",
+};
+
 export const SYMPTOMS = [
   { value: "mood-swings", label: "Mood Swings" },
   { value: "stimming", label: "Stimming" },
