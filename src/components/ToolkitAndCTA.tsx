@@ -18,14 +18,14 @@ const cards = [
     id: "002", slug: "morning-visual-schedule", 
     tag: "Routines",
     title: "A step-by-step visual schedule to reduce anxiety during morning transitions.", 
-    imageSrc: "/emojis/sun-behind-cloud.webp", 
+    imageSrc: "/emojis/sun-behind-cloud.png", 
     color: "blue" as const
   },
   { 
     id: "003", slug: "proprioceptive-heavy-work", 
     tag: "Sensory",
     title: "Proprioceptive exercises that provide calming input for nervous system regulation.", 
-    imageSrc: "/emojis/musical-notes.webp", 
+    imageSrc: "/emojis/musical-notes.png", 
     color: "purple" as const
   },
   { 

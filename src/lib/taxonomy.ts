@@ -14,13 +14,13 @@ export const TOOLKIT_CATEGORIES = [
   {
     value: "routines",
     label: "Routines",
-    emojiImage: "/emojis/sun-behind-cloud.webp",
+    emojiImage: "/emojis/sun-behind-cloud.png",
     description: "Mornings, transitions, bedtime, and meltdowns.",
   },
   {
     value: "sensory",
     label: "Sensory",
-    emojiImage: "/emojis/musical-notes.webp",
+    emojiImage: "/emojis/musical-notes.png",
     description: "Tools, spaces, and regulation strategies.",
   },
   {
@@ -32,7 +32,7 @@ export const TOOLKIT_CATEGORIES = [
   {
     value: "reviews",
     label: "Reviews",
-    emojiImage: "/emojis/star.webp",
+    emojiImage: "/emojis/star.png",
     description: "Honest, non-affiliate product reviews",
   },
   {
