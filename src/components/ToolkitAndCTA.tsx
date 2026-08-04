@@ -11,28 +11,28 @@ const cards = [
     id: "001", slug: "texture-consistent-snacks-arfid", 
     tag: "Recipes",
     title: "Texture-consistent snacks designed specifically for ARFID and aversions.", 
-    imageSrc: "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Food/Bento%20Box.png", 
+    imageSrc: "/emojis/bento-box.webp", 
     color: "orange" as const
   },
   { 
     id: "002", slug: "morning-visual-schedule", 
     tag: "Routines",
     title: "A step-by-step visual schedule to reduce anxiety during morning transitions.", 
-    imageSrc: "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Sun%20Behind%20Cloud.png", 
+    imageSrc: "/emojis/sun-behind-cloud.webp", 
     color: "blue" as const
   },
   { 
     id: "003", slug: "proprioceptive-heavy-work", 
     tag: "Sensory",
     title: "Proprioceptive exercises that provide calming input for nervous system regulation.", 
-    imageSrc: "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Musical%20Notes.png", 
+    imageSrc: "/emojis/musical-notes.webp", 
     color: "purple" as const
   },
   { 
     id: "004", slug: "low-demand-communication-cards", 
     tag: "Communication",
     title: "Customizable communication cards for low-demand days.", 
-    imageSrc: "https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Studio%20Microphone.png", 
+    imageSrc: "/emojis/studio-microphone.webp", 
     color: "green" as const
   }
 ];
