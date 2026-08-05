@@ -109,33 +109,24 @@ body {
   100% { transform: scale(1.12) rotate(0deg); }
 }
 
-.group:hover .animate-emoji-bounce {
-  animation: emoji-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
-}
-
-.group:focus-within .animate-emoji-bounce {
-  animation: emoji-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
-}
-
 @keyframes emoji-shimmer {
   0% { filter: brightness(1) drop-shadow(0 0 4px rgba(230,168,181,0.3)); }
   50% { filter: brightness(1.15) drop-shadow(0 0 8px rgba(230,168,181,0.6)); }
   100% { filter: brightness(1) drop-shadow(0 0 4px rgba(230,168,181,0.3)); }
 }
 
-.group:hover .animate-emoji-shimmer {
-  animation: emoji-shimmer 0.8s ease-in-out infinite;
-}
-
-.group:focus-within .animate-emoji-shimmer {
-  animation: emoji-shimmer 0.8s ease-in-out infinite;
+/* Both animations on one rule so the animation shorthand doesn't override itself.
+   The img has both classes; separate rules cause the later one to clobber the earlier. */
+.group:hover .animate-emoji-bounce.animate-emoji-shimmer,
+.group:focus-within .animate-emoji-bounce.animate-emoji-shimmer {
+  animation:
+    emoji-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite,
+    emoji-shimmer 0.8s ease-in-out infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .group:hover .animate-emoji-bounce,
-  .group:focus-within .animate-emoji-bounce,
-  .group:hover .animate-emoji-shimmer,
-  .group:focus-within .animate-emoji-shimmer {
+  .group:hover .animate-emoji-bounce.animate-emoji-shimmer,
+  .group:focus-within .animate-emoji-bounce.animate-emoji-shimmer {
     animation: none;
   }
 }
