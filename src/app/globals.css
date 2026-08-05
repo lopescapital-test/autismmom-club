@@ -110,11 +110,11 @@ body {
 }
 
 .group:hover .animate-emoji-bounce {
-  animation: emoji-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: emoji-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
 }
 
 .group:focus-within .animate-emoji-bounce {
-  animation: emoji-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  animation: emoji-bounce 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
 }
 
 @keyframes emoji-shimmer {
@@ -124,9 +124,18 @@ body {
 }
 
 .group:hover .animate-emoji-shimmer {
-  animation: emoji-shimmer 0.8s ease-in-out forwards;
+  animation: emoji-shimmer 0.8s ease-in-out infinite;
 }
 
 .group:focus-within .animate-emoji-shimmer {
-  animation: emoji-shimmer 0.8s ease-in-out forwards;
+  animation: emoji-shimmer 0.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .group:hover .animate-emoji-bounce,
+  .group:focus-within .animate-emoji-bounce,
+  .group:hover .animate-emoji-shimmer,
+  .group:focus-within .animate-emoji-shimmer {
+    animation: none;
+  }
 }
