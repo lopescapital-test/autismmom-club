@@ -11,18 +11,21 @@ const CATEGORIES = DISCUSS_CATEGORIES.map((c) => ({
 
 export default function NewThreadForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setServerError(null);
 
     const formData = new FormData(e.currentTarget);
     try {
       await createThread(formData);
       // Redirect happens server-side
     } catch (err) {
-      console.error("Failed to create thread:", err);
-      alert("Something went wrong. Please try again.");
+      const msg = err instanceof Error ? err.message : "Unknown error";
+      console.error("createThread failed:", msg);
+      setServerError(msg);
       setIsSubmitting(false);
     }
   };
@@ -84,6 +87,12 @@ export default function NewThreadForm() {
           className="w-full rounded-2xl border border-border/50 bg-surface/50 px-4 py-4 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 font-body shadow-inner resize-none"
         />
       </div>
+
+      {serverError && (
+        <div className="bg-red-50 border border-red-200 text-red-700 rounded-2xl p-4 text-sm whitespace-pre-wrap font-mono">
+          {serverError}
+        </div>
+      )}
 
       <div className="pt-4">
         <button
