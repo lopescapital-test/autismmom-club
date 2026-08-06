@@ -1,14 +1,14 @@
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
-import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import AdminApprovalForm from "@/components/AdminApprovalForm";
-import { deleteResource, deleteComment } from "./actions";
-import { deleteThread, deleteReply } from "../discuss/actions";
+import { deleteResource, deleteComment, deleteNote } from "./actions";
+import { deleteThread } from "../discuss/actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function AdminPage() {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
 
   // Fetch all pending_review items directly from Postgres
   const { data: pendingItems, error } = await supabase
@@ -35,11 +35,18 @@ export default async function AdminPage() {
     .select("*")
     .order("created_at", { ascending: false });
 
+  // Fetch notes for moderation
+  const { data: allNotes } = await supabase
+    .from("notes")
+    .select("*")
+    .order("created_at", { ascending: false });
+
   if (error) {
     console.error("Error fetching pending items:", error);
   }
 
   const items = pendingItems || [];
+  const notes = allNotes || [];
 
   return (
     <main className="min-h-screen flex flex-col bg-surface/30">
@@ -73,7 +80,7 @@ export default async function AdminPage() {
                     <span className="bg-yellow-100 text-yellow-800 px-2 py-1 rounded text-xs font-mono uppercase">Pending</span>
                   </div>
                   <h3 className="text-2xl font-serif mb-2">{sub.title}</h3>
-                  <p className="text-sm text-foreground/60 mb-4">By {sub.author} • {sub.description}</p>
+                  <p className="text-sm text-foreground/60 mb-4">By {sub.author} &bull; {sub.description}</p>
                   <div className="prose prose-sm text-foreground/80 bg-surface/50 p-4 rounded-xl border border-border/50 whitespace-pre-wrap">
                     {sub.content}
                   </div>
@@ -139,7 +146,7 @@ export default async function AdminPage() {
                     <form action={deleteComment}>
                       <input type="hidden" name="id" value={c.id} />
                       <input type="hidden" name="resource_slug" value={c.resource_slug} />
-                      <button type="submit" className="text-red-500 hover:bg-red-50 px-3 py-1 rounded-md transition-colors text-xs font-bold border border-red-200">Delete</button>
+                      <button type="submit" className="text-red-500 hover:bg-red-50 px-3 py-1 rounded-md transition-colors text-xs font-bold border border-red-200">Hide</button>
                     </form>
                   </td>
                 </tr>
@@ -180,6 +187,41 @@ export default async function AdminPage() {
             </tbody>
           </table>
           {(!discussionThreads || discussionThreads.length === 0) && <p className="text-center py-8 text-foreground/50">No discussion threads yet.</p>}
+        </div>
+
+        {/* Notes Moderation */}
+        <h2 className="text-xl font-bold text-foreground mt-16 mb-4">Bulletin Board Notes</h2>
+        <div className="bg-white rounded-3xl p-6 border border-border/50 shadow-sm overflow-x-auto">
+          <table className="w-full text-left text-sm text-foreground/80">
+            <thead>
+              <tr className="border-b border-border/50 text-foreground">
+                <th className="pb-3 px-4 font-bold">Text</th>
+                <th className="pb-3 px-4 font-bold">Author</th>
+                <th className="pb-3 px-4 font-bold">Color</th>
+                <th className="pb-3 px-4 font-bold">Date</th>
+                <th className="pb-3 px-4 font-bold text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(notes || []).map((note: any) => (
+                <tr key={note.id} className="border-b border-border/30 last:border-0 hover:bg-surface/30">
+                  <td className="py-3 px-4 max-w-sm truncate">{note.text}</td>
+                  <td className="py-3 px-4">{note.author}</td>
+                  <td className="py-3 px-4">
+                    <span className="inline-block w-4 h-4 rounded-full border" style={{ backgroundColor: note.color }} />
+                  </td>
+                  <td className="py-3 px-4 text-xs">{new Date(note.created_at).toLocaleDateString()}</td>
+                  <td className="py-3 px-4 text-right">
+                    <form action={deleteNote}>
+                      <input type="hidden" name="id" value={note.id} />
+                      <button type="submit" className="text-red-500 hover:bg-red-50 px-3 py-1 rounded-md transition-colors text-xs font-bold border border-red-200">Hide</button>
+                    </form>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {notes.length === 0 && <p className="text-center py-8 text-foreground/50">No notes on the bulletin board yet.</p>}
         </div>
 
       </div>

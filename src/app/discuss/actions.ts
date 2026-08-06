@@ -1,6 +1,7 @@
 "use server";
 
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
@@ -60,7 +61,8 @@ export async function addReply(formData: FormData) {
 }
 
 export async function deleteThread(formData: FormData) {
-  const supabase = await createClient();
+  // Admin moderation — uses service role key to bypass RLS
+  const supabase = createAdminClient();
   const slug = formData.get("slug") as string;
 
   if (!slug) throw new Error("Missing slug");

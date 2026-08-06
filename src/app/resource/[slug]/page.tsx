@@ -71,6 +71,7 @@ export default async function ResourcePage({ params }: { params: { slug: string 
     .from("comments")
     .select("*")
     .eq("resource_slug", slug)
+    .or("status.is.null,status.neq.hidden")
     .order("created_at", { ascending: true });
 
   // 3. If STILL not found, throw 404

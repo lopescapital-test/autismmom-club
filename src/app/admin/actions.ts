@@ -1,10 +1,10 @@
 "use server";
 
-import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import { revalidatePath } from "next/cache";
 
 export async function approveResource(formData: FormData) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const id = formData.get("id") as string;
   let emoji = formData.get("emoji") as string;
   const category = formData.get("category") as string;
@@ -17,9 +17,9 @@ export async function approveResource(formData: FormData) {
 
   const { error } = await supabase
     .from("resources")
-    .update({ 
+    .update({
       status: "published",
-      emoji: emoji
+      emoji: emoji,
     })
     .eq("id", id);
 
@@ -33,7 +33,7 @@ export async function approveResource(formData: FormData) {
 }
 
 export async function rejectResource(formData: FormData) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const id = formData.get("id") as string;
 
   if (!id) throw new Error("Missing ID");
@@ -52,7 +52,7 @@ export async function rejectResource(formData: FormData) {
 }
 
 export async function deleteResource(formData: FormData) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const id = formData.get("id") as string;
   const category = formData.get("category") as string;
 
@@ -73,19 +73,21 @@ export async function deleteResource(formData: FormData) {
 }
 
 export async function deleteComment(formData: FormData) {
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const id = formData.get("id") as string;
   const resource_slug = formData.get("resource_slug") as string;
 
   if (!id) throw new Error("Missing ID");
 
+  // Soft delete — set status to hidden instead of hard delete.
+  // Requires a `status` column on the `comments` table.
   const { error } = await supabase
     .from("comments")
-    .delete()
+    .update({ status: "hidden" })
     .eq("id", id);
 
   if (error) {
-    console.error("Failed to delete comment:", error);
+    console.error("Failed to hide comment:", error);
     throw new Error(error.message);
   }
 
@@ -93,7 +95,23 @@ export async function deleteComment(formData: FormData) {
 }
 
 export async function deleteNote(formData: FormData) {
-  // Notes are currently localStorage only, but if we migrate them to supabase we would handle it here.
-  // For now we do nothing here, but we will scaffold the server action.
+  const supabase = createAdminClient();
+  const id = formData.get("id") as string;
+
+  if (!id) throw new Error("Missing ID");
+
+  // Soft delete — set status to hidden instead of hard delete.
+  // Requires a `status` column on the `notes` table.
+  const { error } = await supabase
+    .from("notes")
+    .update({ status: "hidden" })
+    .eq("id", id);
+
+  if (error) {
+    console.error("Failed to hide note:", error);
+    throw new Error(error.message);
+  }
+
   revalidatePath("/wall");
+  revalidatePath("/admin");
 }

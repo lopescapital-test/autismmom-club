@@ -12,8 +12,19 @@ export const metadata = {
 
 export default async function WallPage() {
   const supabase = await createClient();
-  const { data } = await supabase.from("notes").select("*");
-  const globalNotes = data || [];
+  let globalNotes: any[] = [];
+  try {
+    // Exclude hidden notes (soft-deleted). Falls back to unfiltered if the
+    // status column hasn't been added to the notes table yet.
+    const { data } = await supabase
+      .from("notes")
+      .select("*")
+      .or("status.is.null,status.neq.hidden");
+    globalNotes = data || [];
+  } catch {
+    const { data } = await supabase.from("notes").select("*");
+    globalNotes = data || [];
+  }
   
   // Combine local mock data with global cloud data
   const combinedNotes = [...initialAffirmations, ...globalNotes];
