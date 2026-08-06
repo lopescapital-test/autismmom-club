@@ -124,7 +124,11 @@ export async function toggleVote(
   const forwarded = h.get("x-forwarded-for");
   const ip = forwarded?.split(",")[0]?.trim() || h.get("x-real-ip") || "127.0.0.1";
 
-  const salt = process.env.VOTE_SALT || process.env.SUPABASE_SERVICE_ROLE_KEY || "discuss-salt";
+  const salt = process.env.VOTE_SALT;
+  if (!salt) {
+    console.error("VOTE_SALT is not set — voting is disabled.");
+    return { voted: false, error: "Voting is temporarily unavailable." };
+  }
   const ipHash = crypto.createHmac("sha256", salt).update(ip).digest("hex");
 
   // Try insert
