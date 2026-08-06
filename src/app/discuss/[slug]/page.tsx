@@ -5,7 +5,6 @@ import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 import { ArrowLeft, MessageSquare } from "lucide-react";
 import ReplyForm from "./ReplyForm";
-import { deleteReply } from "../actions";
 import { CATEGORY_EMOJI_CHAR } from "@/lib/taxonomy";
 
 
@@ -154,21 +153,7 @@ export default async function ThreadPage({
                           {getTimeAgo(new Date(reply.created_at))}
                         </span>
                       </div>
-                      <form action={deleteReply}>
-                        <input type="hidden" name="id" value={reply.id} />
-                        <input
-                          type="hidden"
-                          name="thread_slug"
-                          value={slug}
-                        />
-                        <button
-                          type="submit"
-                          className="text-foreground/30 hover:text-red-400 transition-colors text-xs"
-                          title="Delete reply"
-                        >
-                          ✕
-                        </button>
-                      </form>
+
                     </div>
                     <p className="text-foreground/80 text-sm font-body leading-relaxed">
                       {reply.text}

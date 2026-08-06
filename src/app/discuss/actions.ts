@@ -79,23 +79,3 @@ export async function deleteThread(formData: FormData) {
 
   revalidatePath("/discuss");
 }
-
-export async function deleteReply(formData: FormData) {
-  const supabase = await createClient();
-  const id = formData.get("id") as string;
-  const threadSlug = formData.get("thread_slug") as string;
-
-  if (!id) throw new Error("Missing reply ID");
-
-  const { error } = await supabase
-    .from("discussion_replies")
-    .delete()
-    .eq("id", id);
-
-  if (error) {
-    console.error("Failed to delete reply:", error);
-    throw new Error(error.message);
-  }
-
-  revalidatePath(`/discuss/${threadSlug}`);
-}
