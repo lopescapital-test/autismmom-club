@@ -18,7 +18,7 @@ export default function Nav() {
               Autism<span style={{ color: "#E6A8B5", WebkitTextFillColor: "#E6A8B5" }} className="text-[0.85em] align-baseline font-bold">+</span> Moms Club
             </span>
             <span className="text-[10px] md:text-xs text-foreground/50 font-body whitespace-nowrap">
-              The power of a mom raising a neurodivergent child.
+              For moms raising neurodivergent kids.
             </span>
           </Link>
         </div>
