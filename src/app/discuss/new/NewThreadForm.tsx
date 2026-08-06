@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState } from "react";
 import { createThread } from "../actions";
 import { DISCUSS_CATEGORIES, CATEGORY_EMOJI_CHAR } from "@/lib/taxonomy";
 
@@ -10,28 +10,10 @@ const CATEGORIES = DISCUSS_CATEGORIES.map((c) => ({
 }));
 
 export default function NewThreadForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [serverError, setServerError] = useState<string | null>(null);
-
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setServerError(null);
-
-    const formData = new FormData(e.currentTarget);
-    try {
-      await createThread(formData);
-      // Redirect happens server-side
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Unknown error";
-      console.error("createThread failed:", msg);
-      setServerError(msg);
-      setIsSubmitting(false);
-    }
-  };
+  const [state, formAction, isPending] = useActionState(createThread, null);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form action={formAction} className="space-y-6">
       <div>
         <label className="block text-sm font-bold text-foreground/70 mb-2">
           Category
@@ -88,19 +70,19 @@ export default function NewThreadForm() {
         />
       </div>
 
-      {serverError && (
+      {state?.error && (
         <div className="bg-red-50 border border-red-200 text-red-700 rounded-2xl p-4 text-sm whitespace-pre-wrap font-mono">
-          {serverError}
+          {state.error}
         </div>
       )}
 
       <div className="pt-4">
         <button
           type="submit"
-          disabled={isSubmitting}
+          disabled={isPending}
           className="w-full bg-gradient-accent text-white rounded-2xl py-4 font-bold text-lg shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 disabled:cursor-not-allowed flex justify-center items-center"
         >
-          {isSubmitting ? (
+          {isPending ? (
             <span className="flex items-center gap-2">
               <svg
                 className="animate-spin h-5 w-5 text-white"

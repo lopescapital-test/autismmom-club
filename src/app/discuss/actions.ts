@@ -8,7 +8,10 @@ import { DISCUSS_CATEGORIES } from "@/lib/taxonomy";
 
 const VALID_CATEGORIES: string[] = DISCUSS_CATEGORIES.map((c) => c.value);
 
-export async function createThread(formData: FormData) {
+export async function createThread(
+  prevState: { error: string } | null | undefined,
+  formData: FormData
+): Promise<{ error: string } | null> {
   const supabase = await createClient();
 
   const title = (formData.get("title") as string) ?? "";
@@ -17,25 +20,25 @@ export async function createThread(formData: FormData) {
   const author = (formData.get("author") as string) || "Anonymous Mom";
 
   // ── Server-side field validation ──
-  const errors: string[] = [];
+  const errs: string[] = [];
 
   if (!title || title.trim().length < 3 || title.trim().length > 200) {
-    errors.push("Title must be between 3 and 200 characters.");
+    errs.push("Title must be between 3 and 200 characters.");
   }
   if (!content || content.trim().length < 10 || content.trim().length > 8000) {
-    errors.push("Content must be between 10 and 8000 characters.");
+    errs.push("Content must be between 10 and 8000 characters.");
   }
   if (author.length > 60) {
-    errors.push("Author name must be 60 characters or less.");
+    errs.push("Author name must be 60 characters or less.");
   }
   if (!VALID_CATEGORIES.includes(category)) {
-    errors.push(
+    errs.push(
       `Category must be one of: ${VALID_CATEGORIES.join(", ")}.`
     );
   }
 
-  if (errors.length > 0) {
-    throw new Error(`Validation failed:\n${errors.join("\n")}`);
+  if (errs.length > 0) {
+    return { error: `Validation failed:\n${errs.join("\n")}` };
   }
 
   // Generate a URL-friendly slug
@@ -57,9 +60,12 @@ export async function createThread(formData: FormData) {
       hint: error.hint,
     });
     // TEMPORARY: expose Postgres error details to the client for debugging
-    throw new Error(
-      `[${error.code}] ${error.message}${error.details ? `\nDetails: ${error.details}` : ""}${error.hint ? `\nHint: ${error.hint}` : ""}`
-    );
+    return {
+      error:
+        `[${error.code}] ${error.message}` +
+        (error.details ? `\nDetails: ${error.details}` : "") +
+        (error.hint ? `\nHint: ${error.hint}` : ""),
+    };
   }
 
   revalidatePath("/discuss");
