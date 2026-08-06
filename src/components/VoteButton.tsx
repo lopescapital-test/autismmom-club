@@ -102,17 +102,17 @@ export default function VoteButton({
     <span className="inline-flex items-center gap-1.5">
       <button
         onClick={handleClick}
-        className={`inline-flex items-center gap-1 text-xs font-bold transition-colors rounded-lg px-2 py-1 ${
+        className={`inline-flex items-center gap-1.5 font-bold transition-colors rounded-xl px-3 py-1.5 min-h-[44px] cursor-pointer select-none border ${
           voted
-            ? "text-primary bg-primary/10"
-            : "text-foreground/40 hover:text-foreground/70 hover:bg-surface/50"
-        }`}
+            ? "text-primary bg-primary/10 border-primary/25"
+            : "text-foreground/50 bg-surface/50 border-border/40 hover:bg-surface hover:border-foreground/20 hover:text-foreground/70"
+        } active:scale-95`}
         title={voted ? "Remove upvote" : "Upvote"}
       >
         <ArrowUp
-          className={`w-3.5 h-3.5 ${voted ? "fill-primary" : ""}`}
+          className={`w-4 h-4 ${voted ? "fill-primary" : ""}`}
         />
-        {count}
+        <span className="text-sm">{count}</span>
       </button>
       {error && (
         <span className="text-[10px] text-red-400 font-body">

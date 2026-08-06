@@ -5,7 +5,6 @@ import { addReply } from "../actions";
 import { Send } from "lucide-react";
 
 const LS_NAME = "discuss_name";
-const LS_ANON = "discuss_anon";
 
 export default function ReplyForm({
   threadSlug,
@@ -24,16 +23,11 @@ export default function ReplyForm({
   const formRef = useRef<HTMLFormElement>(null);
 
   // Identity state from localStorage
-  const [useName, setUseName] = useState(false);
-  const [storedName, setStoredName] = useState("");
   const [author, setAuthor] = useState("");
 
   useEffect(() => {
-    const savedAnon = localStorage.getItem(LS_ANON);
     const savedName = localStorage.getItem(LS_NAME);
-    if (savedAnon === "false" && savedName) {
-      setUseName(true);
-      setStoredName(savedName);
+    if (savedName) {
       setAuthor(savedName);
     }
   }, []);
@@ -46,7 +40,7 @@ export default function ReplyForm({
     setError(null);
     const formData = new FormData(e.currentTarget);
     formData.set("thread_slug", threadSlug);
-    const resolvedAuthor = useName && author.trim() ? author.trim() : "Anonymous Mom";
+    const resolvedAuthor = author.trim() || "Anonymous Mom";
     formData.set("author", resolvedAuthor);
 
     if (parentId) {
@@ -64,18 +58,8 @@ export default function ReplyForm({
     }
   };
 
-  const handleAnonToggle = () => {
-    const next = !useName;
-    setUseName(next);
-    localStorage.setItem(LS_ANON, String(next));
-    if (next) {
-      localStorage.setItem(LS_NAME, author || storedName);
-    }
-  };
-
   const handleNameChange = (val: string) => {
     setAuthor(val);
-    setStoredName(val);
     localStorage.setItem(LS_NAME, val);
   };
 
@@ -91,35 +75,21 @@ export default function ReplyForm({
         </p>
       )}
 
-      {/* Identity toggle */}
-      <div className="flex items-center gap-3 text-xs text-foreground/60">
-        <label className="flex items-center gap-1.5 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={useName}
-            onChange={handleAnonToggle}
-            className="accent-primary rounded"
-          />
-          Post as&hellip;
-        </label>
-        {useName && (
-          <input
-            name="author"
-            type="text"
-            value={author}
-            onChange={(e) => handleNameChange(e.target.value)}
-            placeholder="Your name"
-            maxLength={60}
-            className="rounded-xl border border-border/50 bg-surface/50 px-3 py-1.5 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 font-body shadow-inner w-40"
-          />
-        )}
-        {!useName && (
-          <span className="text-foreground/40 italic">Post anonymously</span>
-        )}
+      {/* Identity — always visible */}
+      <div>
+        <input
+          name="author"
+          type="text"
+          value={author}
+          onChange={(e) => handleNameChange(e.target.value)}
+          placeholder="Your name (optional)"
+          maxLength={60}
+          className="w-full rounded-2xl border border-border/50 bg-surface/50 px-4 py-2.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 font-body shadow-inner"
+        />
+        <p className="text-[10px] text-foreground/30 mt-1">
+          Leave blank to post as Anonymous Mom. Names are not verified &mdash; choose what feels right.
+        </p>
       </div>
-      <p className="text-[10px] text-foreground/30 -mt-1">
-        Names are not verified &mdash; choose what feels right.
-      </p>
 
       {/* Input */}
       <div className="flex gap-3">

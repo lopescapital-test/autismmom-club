@@ -10,30 +10,17 @@ const CATEGORIES = DISCUSS_CATEGORIES.map((c) => ({
 }));
 
 const LS_NAME = "discuss_name";
-const LS_ANON = "discuss_anon";
 
 export default function NewThreadForm() {
   const [state, formAction, isPending] = useActionState(createThread, null);
-  const [useName, setUseName] = useState(false);
   const [author, setAuthor] = useState("");
 
   useEffect(() => {
-    const savedAnon = localStorage.getItem(LS_ANON);
     const savedName = localStorage.getItem(LS_NAME);
-    if (savedAnon === "false" && savedName) {
-      setUseName(true);
+    if (savedName) {
       setAuthor(savedName);
     }
   }, []);
-
-  const handleAnonToggle = () => {
-    const next = !useName;
-    setUseName(next);
-    localStorage.setItem(LS_ANON, String(next));
-    if (next && author) {
-      localStorage.setItem(LS_NAME, author);
-    }
-  };
 
   const handleNameChange = (val: string) => {
     setAuthor(val);
@@ -60,40 +47,22 @@ export default function NewThreadForm() {
         </select>
       </div>
 
-      {/* Identity toggle */}
+      {/* Identity — always visible */}
       <div>
         <label className="block text-sm font-bold text-foreground/70 mb-2">
-          Post as
+          Your name (optional)
         </label>
-        <div className="flex items-center gap-3 text-sm text-foreground/60">
-          <label className="flex items-center gap-1.5 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={useName}
-              onChange={handleAnonToggle}
-              className="accent-primary rounded"
-            />
-            Use a name
-          </label>
-          {useName && (
-            <input
-              name="author"
-              type="text"
-              value={author}
-              onChange={(e) => handleNameChange(e.target.value)}
-              placeholder="Your name"
-              maxLength={60}
-              className="rounded-xl border border-border/50 bg-surface/50 px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 font-body shadow-inner w-48"
-            />
-          )}
-          {!useName && (
-            <span className="text-foreground/40 italic">
-              Post anonymously
-            </span>
-          )}
-        </div>
+        <input
+          name="author"
+          type="text"
+          value={author}
+          onChange={(e) => handleNameChange(e.target.value)}
+          placeholder="Your name (optional)"
+          maxLength={60}
+          className="w-full rounded-2xl border border-border/50 bg-surface/50 px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 font-body shadow-inner"
+        />
         <p className="text-[10px] text-foreground/30 mt-1">
-          Names are not verified &mdash; choose what feels right.
+          Leave blank to post as Anonymous Mom. Names are not verified &mdash; choose what feels right.
         </p>
       </div>
 
