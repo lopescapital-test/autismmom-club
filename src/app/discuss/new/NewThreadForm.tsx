@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState, useEffect } from "react";
 import { createThread } from "../actions";
 import { DISCUSS_CATEGORIES, CATEGORY_EMOJI_CHAR } from "@/lib/taxonomy";
 
@@ -9,8 +9,36 @@ const CATEGORIES = DISCUSS_CATEGORIES.map((c) => ({
   label: `${CATEGORY_EMOJI_CHAR[c.value]} ${c.label}`,
 }));
 
+const LS_NAME = "discuss_name";
+const LS_ANON = "discuss_anon";
+
 export default function NewThreadForm() {
   const [state, formAction, isPending] = useActionState(createThread, null);
+  const [useName, setUseName] = useState(false);
+  const [author, setAuthor] = useState("");
+
+  useEffect(() => {
+    const savedAnon = localStorage.getItem(LS_ANON);
+    const savedName = localStorage.getItem(LS_NAME);
+    if (savedAnon === "false" && savedName) {
+      setUseName(true);
+      setAuthor(savedName);
+    }
+  }, []);
+
+  const handleAnonToggle = () => {
+    const next = !useName;
+    setUseName(next);
+    localStorage.setItem(LS_ANON, String(next));
+    if (next && author) {
+      localStorage.setItem(LS_NAME, author);
+    }
+  };
+
+  const handleNameChange = (val: string) => {
+    setAuthor(val);
+    localStorage.setItem(LS_NAME, val);
+  };
 
   return (
     <form action={formAction} className="space-y-6">
@@ -23,7 +51,7 @@ export default function NewThreadForm() {
           required
           className="w-full rounded-2xl border border-border/50 bg-surface/50 px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 font-body shadow-inner appearance-none cursor-pointer"
         >
-          <option value="">Select a category…</option>
+          <option value="">Select a category&hellip;</option>
           {CATEGORIES.map((cat) => (
             <option key={cat.value} value={cat.value}>
               {cat.label}
@@ -32,16 +60,41 @@ export default function NewThreadForm() {
         </select>
       </div>
 
+      {/* Identity toggle */}
       <div>
         <label className="block text-sm font-bold text-foreground/70 mb-2">
-          Your Name
+          Post as
         </label>
-        <input
-          name="author"
-          type="text"
-          placeholder="Sarah M. (or leave blank for anonymous)"
-          className="w-full rounded-2xl border border-border/50 bg-surface/50 px-4 py-3 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 font-body shadow-inner"
-        />
+        <div className="flex items-center gap-3 text-sm text-foreground/60">
+          <label className="flex items-center gap-1.5 cursor-pointer">
+            <input
+              type="checkbox"
+              checked={useName}
+              onChange={handleAnonToggle}
+              className="accent-primary rounded"
+            />
+            Use a name
+          </label>
+          {useName && (
+            <input
+              name="author"
+              type="text"
+              value={author}
+              onChange={(e) => handleNameChange(e.target.value)}
+              placeholder="Your name"
+              maxLength={60}
+              className="rounded-xl border border-border/50 bg-surface/50 px-3 py-1.5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 font-body shadow-inner w-48"
+            />
+          )}
+          {!useName && (
+            <span className="text-foreground/40 italic">
+              Post anonymously
+            </span>
+          )}
+        </div>
+        <p className="text-[10px] text-foreground/30 mt-1">
+          Names are not verified &mdash; choose what feels right.
+        </p>
       </div>
 
       <div>
@@ -65,7 +118,7 @@ export default function NewThreadForm() {
           name="content"
           required
           rows={8}
-          placeholder="Share your question, experience, or thought…"
+          placeholder="Share your question, experience, or thought&hellip;"
           className="w-full rounded-2xl border border-border/50 bg-surface/50 px-4 py-4 text-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 font-body shadow-inner resize-none"
         />
       </div>
@@ -104,7 +157,7 @@ export default function NewThreadForm() {
                   d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                 />
               </svg>
-              Posting…
+              Posting&hellip;
             </span>
           ) : (
             "Post Discussion"

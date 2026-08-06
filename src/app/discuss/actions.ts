@@ -4,9 +4,13 @@ import { createClient } from "@/utils/supabase/server";
 import { createAdminClient } from "@/utils/supabase/admin";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
+import crypto from "node:crypto";
 import { DISCUSS_CATEGORIES } from "@/lib/taxonomy";
 
 const VALID_CATEGORIES: string[] = DISCUSS_CATEGORIES.map((c) => c.value);
+
+// ── CREATE THREAD ──────────────────────────────────────────
 
 export async function createThread(
   prevState: { error: string } | null | undefined,
@@ -19,9 +23,8 @@ export async function createThread(
   const content = (formData.get("content") as string) ?? "";
   const author = (formData.get("author") as string) || "Anonymous Mom";
 
-  // ── Server-side field validation ──
+  // ── Validation ──
   const errs: string[] = [];
-
   if (!title || title.trim().length < 3 || title.trim().length > 200) {
     errs.push("Title must be between 3 and 200 characters.");
   }
@@ -32,16 +35,12 @@ export async function createThread(
     errs.push("Author name must be 60 characters or less.");
   }
   if (!VALID_CATEGORIES.includes(category)) {
-    errs.push(
-      `Category must be one of: ${VALID_CATEGORIES.join(", ")}.`
-    );
+    errs.push(`Category must be one of: ${VALID_CATEGORIES.join(", ")}.`);
   }
-
   if (errs.length > 0) {
     return { error: `Validation failed:\n${errs.join("\n")}` };
   }
 
-  // Generate a URL-friendly slug
   const rawSlug = title
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
@@ -53,24 +52,15 @@ export async function createThread(
   ]);
 
   if (error) {
-    console.error("Failed to create thread:", {
-      message: error.message,
-      code: error.code,
-      details: error.details,
-      hint: error.hint,
-    });
-    // TEMPORARY: expose Postgres error details to the client for debugging
-    return {
-      error:
-        `[${error.code}] ${error.message}` +
-        (error.details ? `\nDetails: ${error.details}` : "") +
-        (error.hint ? `\nHint: ${error.hint}` : ""),
-    };
+    console.error("Failed to create thread:", error);
+    return { error: "Failed to create thread. Please try again." };
   }
 
   revalidatePath("/discuss");
   redirect(`/discuss/${slug}`);
 }
+
+// ── ADD REPLY ──────────────────────────────────────────────
 
 export async function addReply(formData: FormData) {
   const supabase = await createClient();
@@ -78,35 +68,36 @@ export async function addReply(formData: FormData) {
   const threadSlug = formData.get("thread_slug") as string;
   const text = formData.get("text") as string;
   const author = (formData.get("author") as string) || "Anonymous Mom";
+  const parentId = (formData.get("parent_id") as string) || null;
 
   if (!text || !text.trim()) {
     throw new Error("Reply text is required.");
   }
 
-  const { error } = await supabase.from("discussion_replies").insert([
-    { thread_slug: threadSlug, author, text },
-  ]);
+  const payload: Record<string, any> = {
+    thread_slug: threadSlug,
+    author,
+    text: text.trim(),
+  };
+  if (parentId) {
+    payload.parent_id = parentId;
+  }
+
+  const { error } = await supabase.from("discussion_replies").insert([payload]);
 
   if (error) {
-    console.error("Failed to add reply:", {
-      message: error.message,
-      code: error.code,
-      details: error.details,
-      hint: error.hint,
-    });
-    throw new Error(
-      `[${error.code}] ${error.message}${error.details ? `\nDetails: ${error.details}` : ""}${error.hint ? `\nHint: ${error.hint}` : ""}`
-    );
+    console.error("Failed to add reply:", error);
+    throw new Error("Failed to add reply. Please try again.");
   }
 
   revalidatePath(`/discuss/${threadSlug}`);
 }
 
+// ── DELETE THREAD ──────────────────────────────────────────
+
 export async function deleteThread(formData: FormData) {
-  // Admin moderation — uses service role key to bypass RLS
   const supabase = createAdminClient();
   const slug = formData.get("slug") as string;
-
   if (!slug) throw new Error("Missing slug");
 
   const { error } = await supabase
@@ -118,6 +109,49 @@ export async function deleteThread(formData: FormData) {
     console.error("Failed to delete thread:", error);
     throw new Error(error.message);
   }
-
   revalidatePath("/discuss");
+}
+
+// ── TOGGLE VOTE ────────────────────────────────────────────
+
+export async function toggleVote(
+  targetType: "thread" | "reply",
+  targetId: string
+): Promise<{ voted: boolean; error?: string }> {
+  const supabase = createAdminClient();
+
+  const h = await headers();
+  const forwarded = h.get("x-forwarded-for");
+  const ip = forwarded?.split(",")[0]?.trim() || h.get("x-real-ip") || "127.0.0.1";
+
+  const salt = process.env.VOTE_SALT || process.env.SUPABASE_SERVICE_ROLE_KEY || "discuss-salt";
+  const ipHash = crypto.createHmac("sha256", salt).update(ip).digest("hex");
+
+  // Try insert
+  const { error: insertError } = await supabase.from("votes").insert({
+    target_type: targetType,
+    target_id: targetId,
+    ip_hash: ipHash,
+  });
+
+  if (insertError && insertError.code === "23505") {
+    // Already voted — toggle off
+    const { error: delError } = await supabase
+      .from("votes")
+      .delete()
+      .match({ target_type: targetType, target_id: targetId, ip_hash: ipHash });
+
+    if (delError) {
+      console.error("Failed to remove vote:", delError);
+      return { voted: false, error: "Failed to remove vote." };
+    }
+    return { voted: false };
+  }
+
+  if (insertError) {
+    console.error("Failed to vote:", insertError);
+    return { voted: false, error: "Failed to record vote." };
+  }
+
+  return { voted: true };
 }

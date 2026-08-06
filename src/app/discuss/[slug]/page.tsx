@@ -4,9 +4,10 @@ import Link from "next/link";
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 import { ArrowLeft, MessageSquare } from "lucide-react";
+import VoteButton from "@/components/VoteButton";
 import ReplyForm from "./ReplyForm";
+import ThreadedReplies from "./ThreadedReplies";
 import { CATEGORY_EMOJI_CHAR } from "@/lib/taxonomy";
-
 
 export const dynamic = "force-dynamic";
 export const dynamicParams = true;
@@ -58,15 +59,49 @@ export default async function ThreadPage({
     .eq("thread_slug", slug)
     .order("created_at", { ascending: true });
 
-  const allReplies = replies || [];
+  const allReplies: any[] = replies || [];
   const categoryEmoji = CATEGORY_EMOJI_CHAR[thread.category] || "💬";
+
+  // Build nested tree from flat replies
+  // Top-level replies have parent_id === null (or undefined if old data without parent_id)
+  const replyMap = new Map<string, any[]>();
+  const orphans: any[] = [];
+
+  for (const r of allReplies) {
+    const pid = r.parent_id;
+    if (pid) {
+      if (!replyMap.has(pid)) replyMap.set(pid, []);
+      replyMap.get(pid)!.push(r);
+    } else {
+      orphans.push(r);
+    }
+  }
+
+  const maxDepth = 3;
+
+  function renderTree(replies: any[], depth: number): any[] {
+    return replies.map((r) => ({
+      ...r,
+      children:
+        depth < maxDepth && replyMap.has(r.id)
+          ? renderTree(replyMap.get(r.id)!, depth + 1)
+          : [],
+      depth,
+      hasMore:
+        depth >= maxDepth && replyMap.has(r.id)
+          ? replyMap.get(r.id)!.length
+          : 0,
+      parentAuthor: findParentAuthor(r.parent_id, allReplies),
+    }));
+  }
+
+  const topLevel = renderTree(orphans, 0);
 
   return (
     <main className="min-h-screen flex flex-col bg-background">
       <Nav />
 
       <section className="relative pt-32 pb-16 px-6 md:px-12 flex-1 overflow-hidden">
-        {/* Subtle background texture */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--gradient-start)_0%,_transparent_60%),radial-gradient(ellipse_at_bottom_left,_var(--gradient-via-3)_0%,_transparent_60%)] opacity-20 pointer-events-none" />
 
         <div className="max-w-3xl mx-auto relative z-10">
@@ -85,7 +120,7 @@ export default async function ThreadPage({
               <span className="text-2xl md:text-3xl shrink-0 mt-1">
                 {categoryEmoji}
               </span>
-              <div>
+              <div className="min-w-0 flex-1">
                 <h1 className="text-2xl md:text-4xl font-serif text-foreground leading-tight mb-3">
                   {thread.title}
                 </h1>
@@ -96,9 +131,16 @@ export default async function ThreadPage({
                     </span>
                     {thread.author}
                   </span>
-                  <span>·</span>
+                  <span>&middot;</span>
                   <span>{getTimeAgo(new Date(thread.created_at))}</span>
-                  <span>·</span>
+                  <span>&middot;</span>
+                  <VoteButton
+                    targetType="thread"
+                    targetId={thread.id}
+                    initialCount={thread.vote_count ?? 0}
+                    initialVoted={false}
+                  />
+                  <span>&middot;</span>
                   <span className="inline-flex items-center gap-1">
                     <MessageSquare className="w-3.5 h-3.5" />
                     {thread.reply_count}{" "}
@@ -125,7 +167,7 @@ export default async function ThreadPage({
               Replies ({thread.reply_count})
             </h2>
 
-            {allReplies.length === 0 ? (
+            {topLevel.length === 0 ? (
               <div className="text-center py-10">
                 <div className="w-14 h-14 mx-auto mb-4 bg-surface rounded-2xl flex items-center justify-center">
                   <MessageSquare className="w-7 h-7 text-foreground/30" />
@@ -135,32 +177,7 @@ export default async function ThreadPage({
                 </p>
               </div>
             ) : (
-              <div className="space-y-4">
-                {allReplies.map((reply) => (
-                  <div
-                    key={reply.id}
-                    className="bg-surface/50 p-5 rounded-3xl border border-border/50"
-                  >
-                    <div className="flex items-center justify-between gap-2 mb-2">
-                      <div className="flex items-center gap-2">
-                        <span className="w-6 h-6 rounded-full bg-gradient-accent flex items-center justify-center text-white text-[10px] font-bold font-serif shadow-inner shrink-0">
-                          {(reply.author || "?").charAt(0).toUpperCase()}
-                        </span>
-                        <span className="font-bold text-sm text-foreground">
-                          {reply.author}
-                        </span>
-                        <span className="text-[10px] text-foreground/40">
-                          {getTimeAgo(new Date(reply.created_at))}
-                        </span>
-                      </div>
-
-                    </div>
-                    <p className="text-foreground/80 text-sm font-body leading-relaxed">
-                      {reply.text}
-                    </p>
-                  </div>
-                ))}
-              </div>
+              <ThreadedReplies replies={topLevel} threadSlug={slug} />
             )}
           </div>
 
@@ -177,6 +194,12 @@ export default async function ThreadPage({
       <Footer />
     </main>
   );
+}
+
+function findParentAuthor(parentId: string | null, allReplies: any[]): string | null {
+  if (!parentId) return null;
+  const parent = allReplies.find((r) => r.id === parentId);
+  return parent?.author || null;
 }
 
 function getTimeAgo(date: Date): string {
