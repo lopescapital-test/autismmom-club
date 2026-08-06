@@ -139,6 +139,7 @@ export default async function ThreadPage({
                     targetId={thread.id}
                     initialCount={thread.vote_count ?? 0}
                     initialVoted={false}
+                    threadSlug={slug}
                   />
                   <span>&middot;</span>
                   <span className="inline-flex items-center gap-1">

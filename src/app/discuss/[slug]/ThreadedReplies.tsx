@@ -81,6 +81,7 @@ function ReplyItem({
               targetId={reply.id}
               initialCount={reply.vote_count ?? 0}
               initialVoted={false}
+              threadSlug={threadSlug}
             />
           </div>
         </div>

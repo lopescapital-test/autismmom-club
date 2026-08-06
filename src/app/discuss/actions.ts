@@ -116,8 +116,9 @@ export async function deleteThread(formData: FormData) {
 
 export async function toggleVote(
   targetType: "thread" | "reply",
-  targetId: string
-): Promise<{ voted: boolean; error?: string }> {
+  targetId: string,
+  threadSlug?: string
+): Promise<{ count: number; voted: boolean; error?: string }> {
   const supabase = createAdminClient();
 
   const h = await headers();
@@ -127,7 +128,7 @@ export async function toggleVote(
   const salt = process.env.VOTE_SALT;
   if (!salt) {
     console.error("VOTE_SALT is not set — voting is disabled.");
-    return { voted: false, error: "Voting is temporarily unavailable." };
+    return { count: 0, voted: false, error: "Voting is temporarily unavailable." };
   }
   const ipHash = crypto.createHmac("sha256", salt).update(ip).digest("hex");
 
@@ -138,6 +139,8 @@ export async function toggleVote(
     ip_hash: ipHash,
   });
 
+  let voted: boolean;
+
   if (insertError && insertError.code === "23505") {
     // Already voted — toggle off
     const { error: delError } = await supabase
@@ -147,15 +150,31 @@ export async function toggleVote(
 
     if (delError) {
       console.error("Failed to remove vote:", delError);
-      return { voted: false, error: "Failed to remove vote." };
+      return { count: 0, voted: false, error: "Failed to remove vote." };
     }
-    return { voted: false };
-  }
-
-  if (insertError) {
+    voted = false;
+  } else if (insertError) {
     console.error("Failed to vote:", insertError);
-    return { voted: false, error: "Failed to record vote." };
+    return { count: 0, voted: false, error: "Failed to record vote." };
+  } else {
+    voted = true;
   }
 
-  return { voted: true };
+  // Read authoritative vote_count from the table (DB trigger keeps it in sync)
+  const table = targetType === "thread" ? "discussion_threads" : "discussion_replies";
+  const { data: updated } = await supabase
+    .from(table)
+    .select("vote_count")
+    .eq("id", targetId)
+    .single();
+
+  const count = updated?.vote_count ?? 0;
+
+  // Revalidate so server-rendered pages show fresh counts
+  revalidatePath("/discuss");
+  if (threadSlug) {
+    revalidatePath(`/discuss/${threadSlug}`);
+  }
+
+  return { count, voted };
 }
