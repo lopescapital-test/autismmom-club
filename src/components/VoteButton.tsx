@@ -1,6 +1,6 @@
 "use client";
 
-import { useOptimistic, useState, useEffect, startTransition } from "react";
+import { useState, useEffect, useRef } from "react";
 import { toggleVote } from "@/app/discuss/actions";
 import { ArrowUp } from "lucide-react";
 
@@ -36,52 +36,66 @@ export default function VoteButton({
   initialVoted: boolean;
   threadSlug?: string;
 }) {
-  const [mounted, setMounted] = useState(false);
+  const [count, setCount] = useState(initialCount);
+  const [voted, setVoted] = useState(initialVoted);
   const [error, setError] = useState<string | null>(null);
 
-  // Authoritative state seeded from server-rendered props
-  const [settled, setSettled] = useState({ count: initialCount, voted: initialVoted });
+  // Track whether a local vote is in-flight so the prop-sync effect
+  // doesn't stomp our optimistic values during the round-trip.
+  const pendingRef = useRef(false);
+  // Track the last server-returned count so the sync effect only
+  // applies props when they're genuinely newer than what we've seen.
+  const serverCountRef = useRef(initialCount);
 
-  // Sync when props change (e.g. after revalidation + navigation)
+  // Hydrate localStorage on mount
   useEffect(() => {
-    setSettled({ count: initialCount, voted: initialVoted });
-  }, [initialCount, initialVoted]);
-
-  // On mount: hydrate voted state from localStorage
-  useEffect(() => {
-    setMounted(true);
     const stored = getStoredVoted(targetType, targetId);
-    if (stored !== settled.voted) {
-      setSettled((prev) => ({ ...prev, voted: stored }));
+    if (stored !== initialVoted) {
+      setVoted(stored);
     }
-  }, [targetType, targetId]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Optimistic wrapper: instant visual feedback before the action returns
-  const [optimistic, addOptimistic] = useOptimistic(
-    settled,
-    (state) => ({
-      count: state.voted ? state.count - 1 : state.count + 1,
-      voted: !state.voted,
-    })
-  );
+  // Sync from props only when no vote is in-flight and the prop
+  // actually differs from our last server-returned value.
+  useEffect(() => {
+    if (pendingRef.current) return;
+    if (initialCount !== serverCountRef.current) {
+      setCount(initialCount);
+      serverCountRef.current = initialCount;
+    }
+    if (initialVoted !== voted) {
+      setVoted(initialVoted);
+    }
+  }, [initialCount, initialVoted]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const handleClick = () => {
-    startTransition(async () => {
-      setError(null);
-      addOptimistic(null); // immediate UI flip
+  const handleClick = async () => {
+    const prevCount = count;
+    const prevVoted = voted;
 
-      const res = await toggleVote(targetType, targetId, threadSlug);
+    // Optimistic update — immediate
+    setCount(voted ? count - 1 : count + 1);
+    setVoted(!voted);
+    setError(null);
+    pendingRef.current = true;
 
-      if (res.error) {
-        setError(res.error);
-        setTimeout(() => setError(null), 3000);
-        return; // no setSettled → optimistic reverts to old settled value
-      }
+    const res = await toggleVote(targetType, targetId, threadSlug);
 
-      // Update authoritative state inside the same transition
-      setSettled({ count: res.count ?? 0, voted: res.voted });
-      setStoredVoted(targetType, targetId, res.voted);
-    });
+    pendingRef.current = false;
+
+    if (res.error) {
+      // Revert
+      setCount(prevCount);
+      setVoted(prevVoted);
+      setError(res.error);
+      setTimeout(() => setError(null), 3000);
+      return;
+    }
+
+    // Authoritative value from the server
+    setCount(res.count);
+    setVoted(res.voted);
+    serverCountRef.current = res.count;
+    setStoredVoted(targetType, targetId, res.voted);
   };
 
   return (
@@ -89,16 +103,16 @@ export default function VoteButton({
       <button
         onClick={handleClick}
         className={`inline-flex items-center gap-1 text-xs font-bold transition-colors rounded-lg px-2 py-1 ${
-          optimistic.voted
+          voted
             ? "text-primary bg-primary/10"
             : "text-foreground/40 hover:text-foreground/70 hover:bg-surface/50"
         }`}
-        title={optimistic.voted ? "Remove upvote" : "Upvote"}
+        title={voted ? "Remove upvote" : "Upvote"}
       >
         <ArrowUp
-          className={`w-3.5 h-3.5 ${optimistic.voted ? "fill-primary" : ""}`}
+          className={`w-3.5 h-3.5 ${voted ? "fill-primary" : ""}`}
         />
-        {optimistic.count}
+        {count}
       </button>
       {error && (
         <span className="text-[10px] text-red-400 font-body">
