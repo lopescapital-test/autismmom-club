@@ -102,23 +102,27 @@ export default function TaxonomyFilter({ className = "" }: Props) {
             {DIAGNOSES.map((d) => {
               const active = selectedDiagnoses.includes(d.value);
               return (
-                <button
+                <label
                   key={d.value}
-                  type="button"
-                  onClick={() => toggleDiagnosis(d.value)}
-                  className={`w-full flex items-center gap-3 px-3 py-3 sm:py-2.5 rounded-lg text-sm font-body transition-colors text-left min-h-[44px] touch-manipulation ${
+                  className={`w-full flex items-center gap-3 px-3 py-3 sm:py-2.5 rounded-lg text-sm font-body transition-colors cursor-pointer min-h-[44px] touch-manipulation ${
                     active
                       ? "bg-primary/10 text-primary font-semibold"
                       : "text-foreground/80 hover:bg-surface"
                   }`}
                 >
+                  <input
+                    type="checkbox"
+                    checked={active}
+                    onChange={() => toggleDiagnosis(d.value)}
+                    className="sr-only"
+                  />
                   <span className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 ${
                     active ? "bg-primary border-primary" : "border-border"
                   }`}>
                     {active && <span className="w-2.5 h-2.5 rounded-[2px] bg-white" />}
                   </span>
                   {d.label}
-                </button>
+                </label>
               );
             })}
           </div>
@@ -148,23 +152,27 @@ export default function TaxonomyFilter({ className = "" }: Props) {
             {SYMPTOMS.map((s) => {
               const active = selectedSymptoms.includes(s.value);
               return (
-                <button
+                <label
                   key={s.value}
-                  type="button"
-                  onClick={() => toggleSymptom(s.value)}
-                  className={`w-full flex items-center gap-3 px-3 py-3 sm:py-2.5 rounded-lg text-sm font-body transition-colors text-left min-h-[44px] touch-manipulation ${
+                  className={`w-full flex items-center gap-3 px-3 py-3 sm:py-2.5 rounded-lg text-sm font-body transition-colors cursor-pointer min-h-[44px] touch-manipulation ${
                     active
                       ? "bg-primary/10 text-primary font-semibold"
                       : "text-foreground/80 hover:bg-surface"
                   }`}
                 >
+                  <input
+                    type="checkbox"
+                    checked={active}
+                    onChange={() => toggleSymptom(s.value)}
+                    className="sr-only"
+                  />
                   <span className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 ${
                     active ? "bg-primary border-primary" : "border-border"
                   }`}>
                     {active && <span className="w-2.5 h-2.5 rounded-[2px] bg-white" />}
                   </span>
                   {s.label}
-                </button>
+                </label>
               );
             })}
           </div>

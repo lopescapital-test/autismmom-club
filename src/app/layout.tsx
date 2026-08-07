@@ -21,7 +21,7 @@ const sourceSerif = Source_Serif_4({
 
 export const metadata: Metadata = {
   title: "Autism+ Moms Club",
-  description: "Real wins for real life. A community platform for moms of autistic children.",
+  description: "A community platform for moms of neurodivergent kids — autism, ADHD, and beyond. Real product reviews, mom hacks, sensory strategies, and moms who get it.",
 };
 
 export default function RootLayout({

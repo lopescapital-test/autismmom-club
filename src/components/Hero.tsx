@@ -14,7 +14,7 @@ export default function Hero() {
       </h1>
       
       <p className="text-lg md:text-xl font-serif text-foreground/80 max-w-2xl leading-relaxed">
-        A community platform for moms of autistic children to share recipes, routines, and sensory strategies that actually make a difference.
+        A community platform for moms of neurodivergent kids — autism, ADHD, and beyond. Real product reviews, mom hacks, sensory strategies, and moms who get it.
       </p>
       
       <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
