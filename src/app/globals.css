@@ -22,6 +22,12 @@
   --color-surface: var(--surface);
   --color-border: var(--border);
 
+  --color-primary: #A25D6C;
+  --color-primary-foreground: #FFFFFF;
+  --color-muted: #EDEDE9;
+  --color-muted-foreground: #8A8A86;
+  --color-ring: #A25D6C;
+
   --color-gradient-start: var(--gradient-start);
   --color-gradient-via-1: var(--gradient-via-1);
   --color-gradient-via-2: var(--gradient-via-2);

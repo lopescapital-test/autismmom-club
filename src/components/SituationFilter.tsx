@@ -4,7 +4,7 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import { HACK_SITUATIONS } from "@/lib/taxonomy";
 import type { HackSituation } from "@/lib/taxonomy";
-import { X, ChevronDown, MapPin } from "lucide-react";
+import { X, ChevronDown, MapPin, Check } from "lucide-react";
 
 export default function SituationFilter() {
   const searchParams = useSearchParams();
@@ -72,23 +72,27 @@ export default function SituationFilter() {
           {HACK_SITUATIONS.map((s) => {
             const active = selected.includes(s.value);
             return (
-              <button
+              <label
                 key={s.value}
-                type="button"
-                onClick={() => toggle(s.value)}
-                className={`w-full flex items-center gap-3 px-3 py-3 sm:py-2.5 rounded-lg text-sm font-body transition-colors text-left min-h-[44px] touch-manipulation ${
+                className={`w-full flex items-center gap-3 px-3 py-3 sm:py-2.5 rounded-lg text-sm font-body transition-colors cursor-pointer min-h-[44px] touch-manipulation ${
                   active
-                    ? "bg-primary/10 text-primary font-semibold"
+                    ? "bg-primary/10 text-primary font-semibold hover:bg-primary/15"
                     : "text-foreground/80 hover:bg-surface"
                 }`}
               >
-                <span className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 ${
-                  active ? "bg-primary border-primary" : "border-border"
+                <input
+                  type="checkbox"
+                  checked={active}
+                  onChange={() => toggle(s.value)}
+                  className="sr-only"
+                />
+                <span className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${
+                  active ? "bg-primary border-primary" : "border-border bg-transparent"
                 }`}>
-                  {active && <span className="w-2.5 h-2.5 rounded-[2px] bg-white" />}
+                  {active && <Check className="w-3.5 h-3.5 text-white stroke-[3]" />}
                 </span>
                 {s.label}
-              </button>
+              </label>
             );
           })}
           {selected.length > 0 && (
