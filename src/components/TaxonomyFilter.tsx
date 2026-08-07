@@ -4,7 +4,7 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useCallback, useMemo, useState, useRef, useEffect } from "react";
 import { DIAGNOSES, SYMPTOMS } from "@/lib/taxonomy";
 import type { Diagnosis, Symptom } from "@/lib/taxonomy";
-import { X, ChevronDown, Filter } from "lucide-react";
+import { X, ChevronDown, Filter, Check } from "lucide-react";
 
 interface Props {
   className?: string;
@@ -106,7 +106,7 @@ export default function TaxonomyFilter({ className = "" }: Props) {
                   key={d.value}
                   className={`w-full flex items-center gap-3 px-3 py-3 sm:py-2.5 rounded-lg text-sm font-body transition-colors cursor-pointer min-h-[44px] touch-manipulation ${
                     active
-                      ? "bg-primary/10 text-primary font-semibold"
+                      ? "bg-primary/10 text-primary font-semibold hover:bg-primary/15"
                       : "text-foreground/80 hover:bg-surface"
                   }`}
                 >
@@ -116,10 +116,10 @@ export default function TaxonomyFilter({ className = "" }: Props) {
                     onChange={() => toggleDiagnosis(d.value)}
                     className="sr-only"
                   />
-                  <span className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 ${
-                    active ? "bg-primary border-primary" : "border-border"
+                  <span className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${
+                    active ? "bg-primary border-primary" : "border-border bg-transparent"
                   }`}>
-                    {active && <span className="w-2.5 h-2.5 rounded-[2px] bg-white" />}
+                    {active && <Check className="w-3.5 h-3.5 text-white stroke-[3]" />}
                   </span>
                   {d.label}
                 </label>
@@ -156,7 +156,7 @@ export default function TaxonomyFilter({ className = "" }: Props) {
                   key={s.value}
                   className={`w-full flex items-center gap-3 px-3 py-3 sm:py-2.5 rounded-lg text-sm font-body transition-colors cursor-pointer min-h-[44px] touch-manipulation ${
                     active
-                      ? "bg-primary/10 text-primary font-semibold"
+                      ? "bg-primary/10 text-primary font-semibold hover:bg-primary/15"
                       : "text-foreground/80 hover:bg-surface"
                   }`}
                 >
@@ -166,10 +166,10 @@ export default function TaxonomyFilter({ className = "" }: Props) {
                     onChange={() => toggleSymptom(s.value)}
                     className="sr-only"
                   />
-                  <span className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 ${
-                    active ? "bg-primary border-primary" : "border-border"
+                  <span className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-colors ${
+                    active ? "bg-primary border-primary" : "border-border bg-transparent"
                   }`}>
-                    {active && <span className="w-2.5 h-2.5 rounded-[2px] bg-white" />}
+                    {active && <Check className="w-3.5 h-3.5 text-white stroke-[3]" />}
                   </span>
                   {s.label}
                 </label>
