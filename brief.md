@@ -1,7 +1,7 @@
 # Brief — Autism Mom Club
 
 ## Positioning
-A community platform for moms of autistic children to share recipes, routines, sensory strategies, and small wins that made a real difference for their kid. Mom-focused by design — warm, practical, peer-to-peer.
+A community platform for moms of neurodivergent kids — autism, ADHD, and beyond. Real product reviews, mom hacks, sensory strategies, and moms who get it. Mom-focused by design — warm, practical, peer-to-peer.
 
 ## Scope (Phase 1)
 Static frontend prototype. No backend, no CMS, no user accounts. Submissions handled via embedded Tally or Typeform → spreadsheet for manual curation. Migrate to CMS only after submission volume justifies it.

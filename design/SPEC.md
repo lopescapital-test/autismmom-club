@@ -10,7 +10,7 @@
 - **Layout:** `min-h-[80vh]`, flex column, centered, max-w-4xl mx-auto, text-center.
 - **Top Element:** Small tag, rounded-full, border `#E5E5E0`, "By moms, for moms."
 - **Headline:** `text-5xl md:text-7xl`, `font-sans`, `#1A1A1A`, leading-tight. "Real wins for real life."
-- **Subheadline:** `text-lg md:text-xl`, `font-serif`, `#1A1A1A` opacity-80, max-w-2xl mt-6. "A community platform for moms of autistic children to share recipes, routines, and sensory strategies that actually make a difference."
+- **Subheadline:** `text-lg md:text-xl`, `font-serif`, `#1A1A1A` opacity-80, max-w-2xl mt-6. "A community platform for moms of neurodivergent kids — autism, ADHD, and beyond. Real product reviews, mom hacks, sensory strategies, and moms who get it."
 - **CTA:** Two buttons side-by-side mt-10. Primary: "Read the Wins". Secondary: "Share Your Routine".
 - **Bottom divider:** 2px high full-width div using the accent gradient.
 
